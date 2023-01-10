@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <!-- Required meta tags -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/>
+
+    <!-- Bootstrap tags -->
+    <link href="/css/bootstrap.min.css" rel="stylesheet">
+
+    <title>게시판입니다.</title>
+
+
+</head>
+
+<body>
+
+<div class="container">
+
+    <header class="d-flex flex-wrap align-items-center justify-content-center justify-content-md-between py-3 mb-4 border-bottom">
+        <ul class="nav col-12 col-md-auto mb-2 justify-content-center mb-md-0">
+            <li><a th:href="@{/}" class="nav-link px-2 link-secondary">Home</a></li>
+            <li><a th:href="@{/board/list}" class="nav-link px-2 link-dark">Board</a></li>
+            <li><a href="#" class="nav-link px-2 link-dark">About</a></li>
+        </ul>
+
+        <div class="col-md-3 text-end">
+            <button type="button" class="btn btn-outline-primary me-2">Login</button>
+            <button type="button" class="btn btn-primary">Sign-up</button>
+        </div>
+    </header>
+
+
+    <div class="page-header">
+        <h1>게시글 등록</h1>
+    </div>
+    <div class="starter-template">
+        <form class="form-horizontal" th:action="@{/board/post}" method="post">
+            <div class="form-group">
+                <label style="float: left" for="title" class="col-sm-2 control-label">제목</label>
+                <div class="col-sm-10" style="margin-top: 10px;">
+                    <input type="title" class="form-control" id="title" name="title" placeholder="제목"/>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label style="float: left" for="writer" class="col-sm-2 control-label">작성자</label>
+                <div class="col-sm-10" style="margin-top: 10px;">
+                    <input type="writer" class="form-control" id="writer" name="writer" placeholder="작성자"/>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label style="float: left" for="content" class="col-sm-2 control-label">내용</label>
+                <div class="col-sm-10">
+                    <textarea class="form-control" id="content" name="content" placeholder="내용을 입력해 주세요."></textarea>
+                </div>
+            </div>
+
+            <div class="btn_wrap text-center">
+                <a th:href="@{/board/list}" class="btn btn-secondary">뒤로 가기</a>
+                <button type="submit" class="btn btn-primary waves-effect waves-light">저장 하기</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Optional JavaScript -->
+<!-- jQuery first, then Popper.js, then Bootstrap JS -->
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
+</body>
+</html>
