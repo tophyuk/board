@@ -1,19 +1,15 @@
 package com.tophyuk.board.domain;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.NonNull;
+import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 
 import java.time.LocalDateTime;
 
 @Entity
-@Data
+@Getter
 @NoArgsConstructor
-@AllArgsConstructor
 @Table(name="board")
 public class Board {
 
@@ -36,4 +32,13 @@ public class Board {
     @Column
     private LocalDateTime modifiedDate;
 
+    @Builder
+    public Board(Long id, String title, String writer, String content, LocalDateTime createdDate, LocalDateTime modifiedDate) {
+        this.id = id;
+        this.title = title;
+        this.writer = writer;
+        this.content = content;
+        this.createdDate = createdDate;
+        this.modifiedDate = modifiedDate;
+    }
 }
