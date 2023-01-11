@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 @Getter
 @NoArgsConstructor
 @Table(name="board")
-public class Board {
+public class Board extends Time{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -24,21 +24,12 @@ public class Board {
     @Column(length = 1000, nullable = false)
     private String content;
 
-    @CreatedDate
-    @Column(updatable = false)
-    private LocalDateTime createdDate;
-
-    @LastModifiedDate
-    @Column
-    private LocalDateTime modifiedDate;
 
     @Builder
-    public Board(Long id, String title, String writer, String content, LocalDateTime createdDate, LocalDateTime modifiedDate) {
+    public Board(Long id, String title, String writer, String content) {
         this.id = id;
         this.title = title;
         this.writer = writer;
         this.content = content;
-        this.createdDate = createdDate;
-        this.modifiedDate = modifiedDate;
     }
 }
