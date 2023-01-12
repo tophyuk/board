@@ -30,6 +30,21 @@ public class BoardDto {
         return board;
     }
 
+    public BoardDto toDto(Board board) {
+        BoardDto boardDto = BoardDto.builder()
+                .id(board.getId())
+                .title(board.getTitle())
+                .content(board.getContent())
+                .writer(board.getWriter())
+                .createdDate(board.getCreatedDate())
+                .modifiedDate(board.getModifiedDate())
+                .build();
+        return boardDto;
+    }
+
+
+
+
     @Builder
     public BoardDto(Long id, String title, String writer, String content, LocalDateTime createdDate, LocalDateTime modifiedDate) {
         this.id = id;

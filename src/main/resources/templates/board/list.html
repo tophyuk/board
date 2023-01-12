@@ -12,7 +12,7 @@
 
 </head>
 <body>
-
+    <!--navigation start-->
     <div class="container">
         <header class="d-flex flex-wrap align-items-center justify-content-center justify-content-md-between py-3 mb-4 border-bottom">
             <ul class="nav col-12 col-md-auto mb-2 justify-content-center mb-md-0">
@@ -27,9 +27,37 @@
             </div>
         </header>
     </div>
+    <!--navigation end -->
 
-    <div>
-      <a th:href="@{/board/post}" class="btn btn-primary">글쓰기</a>
-    </div>
+    <!--table start -->
+    <main role="main" class="container">
+
+        <table class="table table-hover">
+            <thead>
+            <tr>
+                <th scope="col">번호</th>
+                <th scope="col">제목</th>
+                <th scope="col">작성자</th>
+                <th scope="col">등록날짜</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="board : ${boardList}">
+                <th scope="row" th:text="${board.id}"></th>
+                <th th:text="${board.title}"></th>
+                <th th:text="${board.writer}"></th>
+                <th th:text="${board.createdDate}"></th>
+            </tr>
+            </tbody>
+        </table>
+
+        <div>
+            <a th:href="@{/board/post}" class="btn btn-primary">글쓰기</a>
+        </div>
+
+    </main>
+
+
+    <!--table end -->
 </body>
 </html>
