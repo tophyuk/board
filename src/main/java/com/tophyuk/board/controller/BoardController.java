@@ -37,7 +37,7 @@ public class BoardController {
         int endPage = (int) (Math.ceil(pageNum / 5.0 )) * PAGE_POST_COUNT;
         int startPage = endPage - (PAGE_POST_COUNT-1);
         int totalPages = boardDtoList.getTotalPages();
-        long totalCnt = boardService.getTotalCnt();
+        long totalCnt = boardDtoList.getTotalElements();
 
         if( (int) (Math.ceil(totalCnt) * 1.0) / PAGE_POST_COUNT < endPage) {
             endPage = ((int) (Math.ceil(totalCnt) * 1.0) / PAGE_POST_COUNT) + 1;

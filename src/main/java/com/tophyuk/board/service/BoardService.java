@@ -36,11 +36,6 @@ public class BoardService {
 
     }
 
-    public long getTotalCnt() {
-        long count = boardRepository.count();
-        return count;
-    }
-
     /** 게시글 글쓰기 **/
     public void save(BoardDto boardDto) {
         boardRepository.save(boardDto.toEntity());
