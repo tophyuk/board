@@ -5,6 +5,7 @@ import com.tophyuk.board.domain.Board;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.data.domain.Page;
 
 import java.time.LocalDateTime;
 
@@ -30,16 +31,16 @@ public class BoardDto {
         return board;
     }
 
-    public BoardDto toDto(Board board) {
-        BoardDto boardDto = BoardDto.builder()
+    public Page<BoardDto> toDto(Page<Board> boardList) {
+        Page<BoardDto> boardDtoList = boardList.map(board ->BoardDto.builder()
                 .id(board.getId())
                 .title(board.getTitle())
                 .content(board.getContent())
                 .writer(board.getWriter())
                 .createdDate(board.getCreatedDate())
                 .modifiedDate(board.getModifiedDate())
-                .build();
-        return boardDto;
+                .build());
+        return boardDtoList;
     }
 
 

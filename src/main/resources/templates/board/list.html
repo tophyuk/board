@@ -42,7 +42,7 @@
             </tr>
             </thead>
             <tbody>
-            <tr th:each="board : ${boardList}">
+            <tr th:each="board : ${boardDtoList}">
                 <th scope="row" th:text="${board.id}"></th>
                 <th th:text="${board.title}"></th>
                 <th th:text="${board.writer}"></th>
@@ -51,9 +51,27 @@
             </tbody>
         </table>
 
+        <!-- Pagination-->
         <div>
-            <a th:href="@{/board/post}" class="btn btn-primary">글쓰기</a>
+            <!-- 페이징 처리 -->
+            <nav aria-label="Page navigation example">
+                <ul class="pagination justify-content-center">
+                    <li class="page-item" th:classappend="${1 == boardDtoList.pageable.pageNumber + 1} ? 'disabled'">
+                        <a class="page-link" th:href="@{/board/list(page=${prev})}" tabindex="-1" aria-disabled="true">이전</a>
+                    </li>
+                    <li class="page-item" th:classappend="${page == boardDtoList.pageable.pageNumber + 1} ? 'disabled'" th:each="page : ${#numbers.sequence(startPage, endPage)}">
+                        <a class="page-link" th:href="@{/board/list(page=${page})}" th:text="${page}">1</a>
+                    </li>
+                    <li class="page-item" th:classappend="${boardDtoList.totalPages == boardDtoList.pageable.pageNumber + 1} ? 'disabled'">
+                        <a class="page-link" th:href="@{/board/list(page=${next})}">다음</a>
+                    </li>
+                </ul>
+            </nav>
+            <!-- // 페이징 처리 -->
         </div>
+
+        <a style="float: right" class="btn btn-primary" th:href="@{/board/post}">글쓰기</a>
+
 
     </main>
 
