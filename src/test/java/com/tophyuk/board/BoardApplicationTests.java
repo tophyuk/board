@@ -63,6 +63,23 @@ class BoardApplicationTests {
 		Assertions.assertThat(findBoard.getCreatedDate()).isAfter(now);
 		Assertions.assertThat(findBoard.getModifiedDate()).isAfter(now);
 
+	}
+
+
+	@Test
+	void getBoard() {
+
+		//given
+		long id = 10;
+		Optional<Board> boardOptional = boardRepository.findById(id);
+		Board board = boardOptional.get();
+
+		//when
+		BoardDto boardDto = new BoardDto().toBaordDto(board);
+
+		//then
+		Assertions.assertThat(boardDto.getId()).isEqualTo(id);
+
 
 	}
 
