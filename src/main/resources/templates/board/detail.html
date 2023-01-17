@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <!-- Required meta tags -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/>
+
+    <!-- Bootstrap tags -->
+    <link href="/css/bootstrap.min.css" rel="stylesheet">
+
+    <title>게시판입니다.</title>
+
+
+</head>
+
+<body>
+
+<div class="container">
+
+    <header class="d-flex flex-wrap align-items-center justify-content-center justify-content-md-between py-3 mb-4 border-bottom">
+        <ul class="nav col-12 col-md-auto mb-2 justify-content-center mb-md-0">
+            <li><a th:href="@{/}" class="nav-link px-2 link-secondary">Home</a></li>
+            <li><a th:href="@{/board/list}" class="nav-link px-2 link-dark">Board</a></li>
+            <li><a href="#" class="nav-link px-2 link-dark">About</a></li>
+        </ul>
+
+        <div class="col-md-3 text-end">
+            <button type="button" class="btn btn-outline-primary me-2">Login</button>
+            <button type="button" class="btn btn-primary">Sign-up</button>
+        </div>
+    </header>
+
+
+    <div class="page-header">
+        <h1>게시글 조회</h1>
+    </div>
+    <main role="main" class="container">
+        <div class="starter-template">
+
+            <table class ="table table-bordered">
+                <thead>
+                </thead>
+                <tbody>
+                <tr>
+                    <th>제목</th>
+                    <td th:text="${boardDto.title}"></td>
+                </tr>
+                <tbody>
+                <tr>
+                    <th>작성자</th>
+                    <td th:text="${boardDto.writer}"></td>
+                </tr>
+                <tr>
+                    <th>작성일</th>
+                    <td th:inline="text">[[${#temporals.format(boardDto.createdDate, 'yyyy-MM-dd HH:mm')}]]</td>
+                </tr>
+                <tr>
+                    <th>본문 내용</th>
+                    <td th:text="${boardDto.content}"></td>
+                </tr>
+                </tbody>
+            </table>
+
+            <!-- 목록/수정/삭제 -->
+            <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                <a th:href="@{|/board/edit/${boardDto.id}|}" class="btn btn-primary me-md-2" role="button" aria-disabled="true">수정</a>
+                <form id="delete-form" th:action="@{|/board/${boardDto.id}|}" method="post">
+                    <input type="hidden" name="_method" value="delete"/>
+                    <button class="btn btn-warning" id="delete-btn">삭제</button>
+                </form>
+            </div>
+
+
+
+        </div>
+    </main>
+</div>
+
+<!-- Optional JavaScript -->
+<!-- jQuery first, then Popper.js, then Bootstrap JS -->
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
+</body>
+</html>

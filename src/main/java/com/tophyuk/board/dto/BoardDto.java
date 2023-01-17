@@ -31,7 +31,7 @@ public class BoardDto {
         return board;
     }
 
-    public Page<BoardDto> toDto(Page<Board> boardList) {
+    public Page<BoardDto> toPageBoardDto(Page<Board> boardList) {
         Page<BoardDto> boardDtoList = boardList.map(board ->BoardDto.builder()
                 .id(board.getId())
                 .title(board.getTitle())
@@ -43,6 +43,17 @@ public class BoardDto {
         return boardDtoList;
     }
 
+    public BoardDto toBaordDto(Board board) {
+        BoardDto boardDTO = BoardDto.builder()
+                .id(board.getId())
+                .title(board.getTitle())
+                .content(board.getContent())
+                .writer(board.getWriter())
+                .createdDate(board.getCreatedDate())
+                .modifiedDate(board.getModifiedDate())
+                .build();
+        return boardDTO;
+    }
 
 
 
@@ -55,4 +66,6 @@ public class BoardDto {
         this.createdDate = createdDate;
         this.modifiedDate = modifiedDate;
     }
+
+
 }

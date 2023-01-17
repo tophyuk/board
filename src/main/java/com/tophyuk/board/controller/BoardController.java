@@ -1,22 +1,14 @@
 package com.tophyuk.board.controller;
 
-import com.tophyuk.board.domain.Board;
 import com.tophyuk.board.dto.BoardDto;
-import com.tophyuk.board.repository.BoardRepository;
 import com.tophyuk.board.service.BoardService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 import java.util.Map;
 
 @Controller
@@ -33,32 +25,26 @@ public class BoardController {
     @GetMapping("/list")
     public String list(Model model, @RequestParam(value = "page", defaultValue = "1") Integer pageNum) {
         Page<BoardDto> boardDtoList = boardService.getList(pageNum);
+        Map<String, Object> paging = boardService.getPaging(pageNum);
 
-        int endPage = (int) (Math.ceil(pageNum / 5.0 )) * PAGE_POST_COUNT;
-        int startPage = endPage - (PAGE_POST_COUNT-1);
-        int totalPages = boardDtoList.getTotalPages();
-        long totalCnt = boardDtoList.getTotalElements();
-
-        if( (int) (Math.ceil(totalCnt) * 1.0) / PAGE_POST_COUNT < endPage) {
-            endPage = ((int) (Math.ceil(totalCnt) * 1.0) / PAGE_POST_COUNT) + 1;
-        }
-
-        int prevNext = pageNum / 5;
-
-        int prev = (prevNext * PAGE_POST_COUNT) - (PAGE_POST_COUNT-1) ;
-        int next = ((prevNext + 1) * PAGE_POST_COUNT) + 1;
-
-        prev = prev < 1 ? 1 : prev;
-        next = next > totalPages ? totalPages : next;
-
-        model.addAttribute("startPage", startPage);
-        model.addAttribute("endPage", endPage);
-        model.addAttribute("prev", prev);
-        model.addAttribute("next", next);
+        model.addAttribute("startPage", paging.get("startPage"));
+        model.addAttribute("endPage", paging.get("endPage"));
+        model.addAttribute("prev", paging.get("prev"));
+        model.addAttribute("next", paging.get("next"));
         model.addAttribute("boardDtoList", boardDtoList);
 
         return "board/list";
     }
+
+
+    @GetMapping("/{no}")
+    public String detail(@PathVariable("no") Long no, Model model) {
+
+        BoardDto boardDto = boardService.getBoard(no);
+        model.addAttribute("boardDto", boardDto);
+        return "board/detail";
+    }
+
 
     @GetMapping("/post")
     public String write() {
