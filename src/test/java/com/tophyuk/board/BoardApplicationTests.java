@@ -3,6 +3,7 @@ package com.tophyuk.board;
 import com.tophyuk.board.domain.Board;
 import com.tophyuk.board.dto.BoardDto;
 import com.tophyuk.board.repository.BoardRepository;
+import org.assertj.core.api.Assert;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -67,6 +68,7 @@ class BoardApplicationTests {
 
 
 	@Test
+	@DisplayName("게시글 조회 테스트")
 	void getBoard() {
 
 		//given
@@ -80,7 +82,48 @@ class BoardApplicationTests {
 		//then
 		Assertions.assertThat(boardDto.getId()).isEqualTo(id);
 
+	}
+	
+	@Test
+	@DisplayName("게시글 삭제 테스트")
+	void delete() {
 
+		//given
+		BoardDto boardDto = new BoardDto();
+		boardDto.setTitle(title);
+		boardDto.setWriter(writer);
+		boardDto.setContent(content);
+		boardDto.toEntity();
+
+		Long id = boardRepository.save(boardDto.toEntity()).getId();
+
+		//when
+		boardRepository.deleteById(id);
+
+
+		//then
+		Board board = boardRepository.findById(id).get();
+		Assertions.assertThat(board).isNotNull();
+
+	}
+
+
+	@Test
+	@DisplayName("게시글 수정 테스트")
+	void update() {
+
+		//given
+		long id = 10;
+		String title = "제목 바꿔봅니다.";
+		Board board = boardRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("게시글이 없습니다."));
+		BoardDto boardDto = new BoardDto().toBaordDto(board);
+		boardDto.setTitle(title);
+
+		//when
+		Board saveBoard = boardRepository.save(boardDto.toEntity());
+
+	 	//then
+		Assertions.assertThat(board.getTitle()).isNotEqualTo(saveBoard.getTitle());
 	}
 
 }
