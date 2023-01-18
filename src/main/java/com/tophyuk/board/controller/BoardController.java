@@ -39,7 +39,7 @@ public class BoardController {
 
     @GetMapping("/{no}")
     public String detail(@PathVariable("no") Long no, Model model) {
-
+        log.info("dsadsadsa");
         BoardDto boardDto = boardService.getBoard(no);
         model.addAttribute("boardDto", boardDto);
         //model.addAttribute("pageNum", pageNum);Model
@@ -64,6 +64,20 @@ public class BoardController {
         boardService.delete(no);
         return "redirect:/board/list";
     }
-    
+
+    @GetMapping("/edit/{no}")
+    public String edit(@PathVariable Long no, Model model) {
+        BoardDto boardDto = boardService.getBoard(no);
+
+        model.addAttribute("boardDto", boardDto);
+
+        return "/board/update";
+    }
+
+    @PutMapping("/edit/{no}")
+    public String update(@PathVariable Long no, BoardDto boardDto) {
+        boardService.save(boardDto);
+        return "redirect:/board/{no}";
+    }
 
 }
