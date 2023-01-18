@@ -68,6 +68,8 @@ public class BoardService {
 
     /** 게시판 조회 **/
     public BoardDto getBoard(Long id){
+        //Board board = boardRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("게시글이 없습니다."));
+
         // Optional : NullPointException 방지
         Optional<Board> boardOptional = boardRepository.findById(id);
         Board board = boardOptional.get();
@@ -82,5 +84,10 @@ public class BoardService {
         boardRepository.save(boardDto.toEntity());
     }
 
+
+    /** 게시글 삭제 **/
+    public void delete(Long id) {
+        boardRepository.deleteById(id);
+    }
 
 }

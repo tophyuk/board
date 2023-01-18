@@ -42,6 +42,7 @@ public class BoardController {
 
         BoardDto boardDto = boardService.getBoard(no);
         model.addAttribute("boardDto", boardDto);
+        //model.addAttribute("pageNum", pageNum);Model
         return "board/detail";
     }
 
@@ -58,5 +59,11 @@ public class BoardController {
         return "redirect:/board/list";
     }
 
+    @DeleteMapping("/{no}")
+    public String delete(@PathVariable Long no) {
+        boardService.delete(no);
+        return "redirect:/board/list";
+    }
+    
 
 }
