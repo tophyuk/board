@@ -12,8 +12,9 @@
 
 </head>
 <body>
-    <!--navigation start-->
+
     <div class="container">
+        <!--navigation start-->
         <header class="d-flex flex-wrap align-items-center justify-content-center justify-content-md-between py-3 mb-4 border-bottom">
             <ul class="nav col-12 col-md-auto mb-2 justify-content-center mb-md-0">
                 <li><a th:href="@{/}" class="nav-link px-2 link-secondary">Home</a></li>
@@ -26,58 +27,59 @@
                 <button type="button" class="btn btn-primary">Sign-up</button>
             </div>
         </header>
+        <!--navigation end -->
+
+        <main role="main" class="container">
+            <!--table start -->
+            <table class="table table-hover">
+                <thead>
+                <tr>
+                    <th class="col-md-1">번호</th>
+                    <th class="col-md-4">글제목</th>
+                    <th class="col-md-3">작성자</th>
+                    <th class="col-md-2">작성일</th>
+                    <th class="col-md-2">수정일</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="board : ${boardDtoList}">
+                    <td scope="row" th:text="${board.id}"></td>
+                    <td><a th:href="@{/board/{id}(id=${board.id}, page=${boardDtoList.pageable.pageNumber + 1})}" th:text="${board.title}" ></a></td>
+                    <td th:text="${board.writer}"></td>
+                    <td th:text="${board.createdDate} ? ${#temporals.format(board.createdDate,'yyyy-MM-dd HH:mm')} : ${board.createdDate}"></td>
+                    <td th:text="${board.modifiedDate} ? ${#temporals.format(board.modifiedDate,'yyyy-MM-dd HH:mm')} : ${board.modifiedDate}"></td>
+                </tr>
+                </tbody>
+            </table>
+            <!--table end -->
+            <!-- Pagination-->
+            <div>
+                <!-- 페이징 처리 -->.
+
+                <nav aria-label="Page navigation example">
+                    <ul class="pagination justify-content-center">
+                        <li class="page-item" th:classappend="${1 == boardDtoList.pageable.pageNumber + 1} ? 'disabled'">
+                            <a class="page-link" th:href="@{/board/list(page=${prev})}" tabindex="-1" aria-disabled="true">이전</a>
+                        </li>
+                        <li class="page-item" th:classappend="${page == boardDtoList.pageable.pageNumber + 1} ? 'disabled'" th:each="page : ${#numbers.sequence(startPage, endPage)}">
+                            <a class="page-link" th:href="@{/board/list(page=${page})}" th:text="${page}">1</a>
+                        </li>
+                        <li class="page-item" th:classappend="${boardDtoList.totalPages == boardDtoList.pageable.pageNumber + 1} ? 'disabled'">
+                            <a class="page-link" th:href="@{/board/list(page=${next})}">다음</a>
+                        </li>
+                    </ul>
+                </nav>
+                <!-- // 페이징 처리 -->
+            </div>
+
+            <a style="float: right" class="btn btn-primary" th:href="@{/board/post}">글쓰기</a>
+
+        </main>
     </div>
-    <!--navigation end -->
 
-    <!--table start -->
-    <main role="main" class="container">
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script
 
-        <table class="table table-hover">
-            <thead>
-            <tr>
-                <th class="col-md-1">번호</th>
-                <th class="col-md-4">글제목</th>
-                <th class="col-md-3">작성자</th>
-                <th class="col-md-2">작성일</th>
-                <th class="col-md-2">수정일</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr th:each="board : ${boardDtoList}">
-                <td scope="row" th:text="${board.id}"></td>
-                <td><a th:href="@{|/board/${board.id}|}" th:text="${board.title}" ></a></td>
-                <td th:text="${board.writer}"></td>
-                <td th:text="${board.createdDate} ? ${#temporals.format(board.createdDate,'yyyy-MM-dd HH:mm')} : ${board.createdDate}"></td>
-                <td th:text="${board.modifiedDate} ? ${#temporals.format(board.modifiedDate,'yyyy-MM-dd HH:mm')} : ${board.modifiedDate}"></td>
-            </tr>
-            </tbody>
-        </table>
-
-        <!-- Pagination-->
-        <div>
-            <!-- 페이징 처리 -->
-            <nav aria-label="Page navigation example">
-                <ul class="pagination justify-content-center">
-                    <li class="page-item" th:classappend="${1 == boardDtoList.pageable.pageNumber + 1} ? 'disabled'">
-                        <a class="page-link" th:href="@{/board/list(page=${prev})}" tabindex="-1" aria-disabled="true">이전</a>
-                    </li>
-                    <li class="page-item" th:classappend="${page == boardDtoList.pageable.pageNumber + 1} ? 'disabled'" th:each="page : ${#numbers.sequence(startPage, endPage)}">
-                        <a class="page-link" th:href="@{/board/list(page=${page})}" th:text="${page}">1</a>
-                    </li>
-                    <li class="page-item" th:classappend="${boardDtoList.totalPages == boardDtoList.pageable.pageNumber + 1} ? 'disabled'">
-                        <a class="page-link" th:href="@{/board/list(page=${next})}">다음</a>
-                    </li>
-                </ul>
-            </nav>
-            <!-- // 페이징 처리 -->
-        </div>
-
-        <a style="float: right" class="btn btn-primary" th:href="@{/board/post}">글쓰기</a>
-
-
-    </main>
-
-
-    <!--table end -->
 </body>
 </html>

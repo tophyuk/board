@@ -73,7 +73,7 @@ public class BoardService {
         // Optional : NullPointException 방지
         Optional<Board> boardOptional = boardRepository.findById(id);
         Board board = boardOptional.get();
-        BoardDto boardDto = new BoardDto().toBaordDto(board);
+        BoardDto boardDto = new BoardDto().toBoardDto(board);
 
         return boardDto;
     }

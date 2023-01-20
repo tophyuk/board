@@ -9,9 +9,11 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 @SpringBootTest
@@ -27,6 +29,7 @@ class BoardApplicationTests {
 
 
 	@Test
+	@DisplayName("게시글 등록 테스트")
 	void save(){
 
 		//given
@@ -77,7 +80,7 @@ class BoardApplicationTests {
 		Board board = boardOptional.get();
 
 		//when
-		BoardDto boardDto = new BoardDto().toBaordDto(board);
+		BoardDto boardDto = new BoardDto().toBoardDto(board);
 
 		//then
 		Assertions.assertThat(boardDto.getId()).isEqualTo(id);
@@ -116,7 +119,7 @@ class BoardApplicationTests {
 		long id = 10;
 		String title = "제목 바꿔봅니다.";
 		Board board = boardRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("게시글이 없습니다."));
-		BoardDto boardDto = new BoardDto().toBaordDto(board);
+		BoardDto boardDto = new BoardDto().toBoardDto(board);
 		boardDto.setTitle(title);
 
 		//when
@@ -124,6 +127,16 @@ class BoardApplicationTests {
 
 	 	//then
 		Assertions.assertThat(board.getTitle()).isNotEqualTo(saveBoard.getTitle());
+	}
+
+	@Test
+	@DisplayName("게시글 검색 테스트")
+	void search() {
+
+		String searchType="title";
+		String keyword="제목";
+
+
 	}
 
 }

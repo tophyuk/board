@@ -8,7 +8,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.util.List;
 import java.util.Map;
 
 @Controller
@@ -23,9 +25,9 @@ public class BoardController {
     private static final int PAGE_POST_COUNT = 5; // 한 페이지에 존재하는 게시글 수
 
     @GetMapping("/list")
-    public String list(Model model, @RequestParam(value = "page", defaultValue = "1") Integer pageNum) {
-        Page<BoardDto> boardDtoList = boardService.getList(pageNum);
-        Map<String, Object> paging = boardService.getPaging(pageNum);
+    public String list(Model model, @RequestParam(value = "page", defaultValue = "1") Integer page) {
+        Page<BoardDto> boardDtoList = boardService.getList(page);
+        Map<String, Object> paging = boardService.getPaging(page);
 
         model.addAttribute("startPage", paging.get("startPage"));
         model.addAttribute("endPage", paging.get("endPage"));
@@ -38,14 +40,15 @@ public class BoardController {
 
 
     @GetMapping("/{no}")
-    public String detail(@PathVariable("no") Long no, Model model) {
-        log.info("dsadsadsa");
+    public String detail(@PathVariable(value="no") Long no,
+                         @RequestParam(value="page", required=false) Integer page,
+                         Model model) {
+
         BoardDto boardDto = boardService.getBoard(no);
         model.addAttribute("boardDto", boardDto);
-        //model.addAttribute("pageNum", pageNum);Model
+        model.addAttribute("page", page);
         return "board/detail";
     }
-
 
     @GetMapping("/post")
     public String write() {
@@ -66,18 +69,23 @@ public class BoardController {
     }
 
     @GetMapping("/edit/{no}")
-    public String edit(@PathVariable Long no, Model model) {
+    public String edit(@PathVariable Long no, @RequestParam(value="page") Integer page, Model model) {
         BoardDto boardDto = boardService.getBoard(no);
 
+        model.addAttribute("page", page);
         model.addAttribute("boardDto", boardDto);
 
         return "/board/update";
     }
 
     @PutMapping("/edit/{no}")
-    public String update(@PathVariable Long no, BoardDto boardDto) {
+    public String update(@PathVariable Long no, @RequestParam(value="page") Integer page,  BoardDto boardDto, RedirectAttributes redirectAttributes) {
         boardService.save(boardDto);
+
+        redirectAttributes.addAttribute("page", page);
+
         return "redirect:/board/{no}";
     }
+
 
 }

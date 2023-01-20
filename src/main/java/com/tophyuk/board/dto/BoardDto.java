@@ -43,7 +43,7 @@ public class BoardDto {
         return boardDtoList;
     }
 
-    public BoardDto toBaordDto(Board board) {
+    public BoardDto toBoardDto(Board board) {
         BoardDto boardDTO = BoardDto.builder()
                 .id(board.getId())
                 .title(board.getTitle())

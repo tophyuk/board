@@ -63,7 +63,8 @@
 
             <!-- 목록/수정/삭제 -->
             <div class="d-grid gap-2 d-md-flex justify-content-md-end">
-                <a th:href="@{|/board/edit/${boardDto.id}|}" class="btn btn-primary me-md-2" role="button" aria-disabled="true">수정</a>
+                <a th:href="@{/board/list(page=${page})}" class="btn btn-secondary" role="button" aria-disabled="true">목록</a>
+                <a th:href="@{/board/edit/{id}(id=${boardDto.id}, page=${page})}" class="btn btn-primary me-md-2" role="button" aria-disabled="true">수정</a>
                 <form id="delete-form" th:action="@{|/board/${boardDto.id}|}" method="post">
                     <input type="hidden" name="_method" value="delete"/>
                     <button class="btn btn-warning" id="delete-btn">삭제</button>
