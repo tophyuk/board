@@ -1,6 +1,7 @@
 package com.tophyuk.board.controller;
 
 import com.tophyuk.board.dto.BoardDto;
+import com.tophyuk.board.dto.SearchDto;
 import com.tophyuk.board.service.BoardService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -25,8 +26,10 @@ public class BoardController {
     private static final int PAGE_POST_COUNT = 5; // 한 페이지에 존재하는 게시글 수
 
     @GetMapping("/list")
-    public String list(Model model, @RequestParam(value = "page", defaultValue = "1") Integer page) {
-        Page<BoardDto> boardDtoList = boardService.getList(page);
+    public String list(Model model,
+                       @RequestParam(value = "page", defaultValue = "1") Integer page, SearchDto searchDto) {
+
+        Page<BoardDto> boardDtoList = boardService.getList(page, searchDto);
         Map<String, Object> paging = boardService.getPaging(page);
 
         model.addAttribute("startPage", paging.get("startPage"));
@@ -37,7 +40,6 @@ public class BoardController {
 
         return "board/list";
     }
-
 
     @GetMapping("/{no}")
     public String detail(@PathVariable(value="no") Long no,
@@ -79,7 +81,8 @@ public class BoardController {
     }
 
     @PutMapping("/edit/{no}")
-    public String update(@PathVariable Long no, @RequestParam(value="page") Integer page,  BoardDto boardDto, RedirectAttributes redirectAttributes) {
+    public String update(@PathVariable Long no, @RequestParam(value="page") Integer page,  BoardDto boardDto,
+                         RedirectAttributes redirectAttributes) {
         boardService.save(boardDto);
 
         redirectAttributes.addAttribute("page", page);

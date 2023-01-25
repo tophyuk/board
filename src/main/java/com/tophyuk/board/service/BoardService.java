@@ -2,6 +2,7 @@ package com.tophyuk.board.service;
 
 import com.tophyuk.board.domain.Board;
 import com.tophyuk.board.dto.BoardDto;
+import com.tophyuk.board.dto.SearchDto;
 import com.tophyuk.board.repository.BoardRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -23,9 +24,21 @@ public class BoardService {
     private static final int PAGE_POST_COUNT = 5; // 한 페이지에 존재하는 게시글 수
 
     /**게시글 목록 불러오기 **/
-    public Page<BoardDto> getList(Integer pageNum) {
-        PageRequest pageRequest = PageRequest.of(pageNum-1, PAGE_POST_COUNT, Sort.by(Sort.Direction.ASC, "createdDate"));
-        Page<Board> boardList = boardRepository.findAll(pageRequest);
+    public Page<BoardDto> getList(Integer pageNum, SearchDto searchDto) {
+        PageRequest pageRequest = PageRequest.of(pageNum-1, PAGE_POST_COUNT, Sort.by(Sort.Direction.DESC, "createdDate"));
+
+        Page<Board> boardList = null;
+
+        if(searchDto.getSearchType() == null){
+            boardList = boardRepository.findAll(pageRequest);
+        } else if(searchDto.getSearchType().equals("title")) {
+            boardList = boardRepository.findByTitleContaining(searchDto.getKeyword(), pageRequest);
+        } else if(searchDto.getSearchType().equals("content")) {
+            boardList = boardRepository.findByContentContaining(searchDto.getKeyword(), pageRequest);
+        } else if(searchDto.getSearchType().equals("writer")) {
+            boardList = boardRepository.findByWriterContaining(searchDto.getKeyword(), pageRequest);
+        }
+
         Page<BoardDto> boardDtoList = new BoardDto().toPageBoardDto(boardList); // Page<Entity> -> Page<Dto> 변환.
 
         return boardDtoList;
@@ -35,6 +48,7 @@ public class BoardService {
     /** 게시글 목록 페이징 처리 **/
     public Map<String, Object> getPaging(Integer pageNum){
         PageRequest pageRequest = PageRequest.of(pageNum-1, PAGE_POST_COUNT, Sort.by(Sort.Direction.ASC, "createdDate"));
+
         Page<Board> boardList = boardRepository.findAll(pageRequest);
         Page<BoardDto> boardDtoList = new BoardDto().toPageBoardDto(boardList); // Page<Entity> -> Page<Dto> 변환.
 
@@ -95,4 +109,13 @@ public class BoardService {
         boardRepository.save(boardDto.toEntity());
     }
 
+
+    /** 게시글 검색 **/
+    public Page<BoardDto> search(String keyword, Integer pageNum) {
+        PageRequest pageRequest = PageRequest.of(pageNum-1, PAGE_POST_COUNT, Sort.by(Sort.Direction.ASC, "createdDate"));
+        Page<Board> boardList = boardRepository.findByTitleContaining(keyword, pageRequest);
+        Page<BoardDto> boardDtoList = new BoardDto().toPageBoardDto(boardList); // Page<Entity> -> Page<Dto> 변환.
+
+        return boardDtoList;
+    }
 }
