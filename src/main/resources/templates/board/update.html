@@ -39,7 +39,8 @@
     <form class="form-horizontal" th:action method="post">
       <input type="hidden" name="_method" value="put"/>
       <input type="hidden" name="id" th:value="${boardDto.id}"/>
-      <input type="hidden" name="page" th:value="${page}"/>
+      <input type="hidden" name="searchType" th:value="${searchDto.searchType}"/>
+      <input type="hidden" name="keyword" th:value="${searchDto.keyword}"/>
 
       <div class="form-group">
         <label style="float: left" for="title" class="col-sm-2 control-label">제목</label>
@@ -63,7 +64,8 @@
       </div>
 
       <div class="btn_wrap text-center">
-        <a th:href="@{/board/list(page=${page})}" class="btn btn-secondary">취소</a>
+        <a th:if="${searchDto.searchType == null && searchDto.keyword == null}" th:href="@{/board/{id}(id=${boardDto.id}, page=${page})}" class="btn btn-secondary">취소</a>
+        <a th:unless="${searchDto.searchType == null && searchDto.keyword == null}" th:href="@{/board/{id}(id=${boardDto.id}, page=${page}, searchType=${searchDto.searchType}, keyword=${searchDto.keyword})}" class="btn btn-secondary">취소</a>
         <button type="submit" class="btn btn-primary waves-effect waves-light">수정</button>
       </div>
     </form>

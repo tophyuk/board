@@ -34,22 +34,21 @@
         </div>
 
         <!-- search start -->
-        <form th:action="@{/board/list}" method="GET">
+        <form th:action="@{/board/list}" th:object=${searchDto} method="GET">
+            <input name="page" type="hidden" th:value="1">
             <div style="float: right;">
-                <select name="searchType">
-                    <option selected value="">선택</option>
+                <select th:field="*{searchType}">
                     <option th:value="title">제목</option>
                     <option th:value="content">내용</option>
                     <option th:value="writer">작성자</option>
                 </select>
-                <input name="keyword" type="text" placeholder="검색어를 입력해주세요.">
-                <input name="page" type="hidden" th:value="1">
+                <input th:field="*{keyword}" type="text" placeholder="검색어를 입력해주세요.">
                 <button class="btn btn-outline-secondary btn-sm">검색하기</button>
             </div>
         </form>
-
         <!-- search end -->
-        <main role="main" class="container">
+
+        <main role="main" class="container" th:object=${searchDto}>
             <!--table start -->
             <table class="table table-hover">
                 <thead>
@@ -62,37 +61,47 @@
                 </tr>
                 </thead>
                 <tbody>
-                <tr th:each="board : ${boardDtoList}">
+                <tr th:if="${boardDtoList.getTotalElements() != 0}" th:each="board : ${boardDtoList}">
                     <td scope="row" th:text="${board.id}"></td>
-                    <td><a th:href="@{/board/{id}(id=${board.id}, page=${boardDtoList.pageable.pageNumber + 1})}" th:text="${board.title}" ></a></td>
+                    <td>
+                        <a th:if="*{searchType == null || keyword == null}" th:href="@{/board/{id}(id=${board.id}, page=${boardDtoList.pageable.pageNumber + 1})}" th:text="${board.title}" ></a>
+                        <a th:unless="*{searchType == null || keyword == null}" th:href="@{/board/{id}(id=${board.id}, page=${boardDtoList.pageable.pageNumber + 1}, searchType=*{searchType}, keyword=*{keyword})}" th:text="${board.title}" ></a>
+                    </td>
                     <td th:text="${board.writer}"></td>
                     <td th:text="${board.createdDate} ? ${#temporals.format(board.createdDate,'yyyy-MM-dd HH:mm')} : ${board.createdDate}"></td>
                     <td th:text="${board.modifiedDate} ? ${#temporals.format(board.modifiedDate,'yyyy-MM-dd HH:mm')} : ${board.modifiedDate}"></td>
                 </tr>
+                <tr th:if="${boardDtoList.getTotalElements() == 0}">
+                    <td colspan="5" style="text-align:center">게시글이 존재하지 않습니다.</td>
+                </tr>
                 </tbody>
+
             </table>
             <!--table end -->
             <!-- Pagination-->
             <div>
-                <!-- 페이징 처리 -->.
-
-                <nav aria-label="Page navigation example">
+                <!-- 페이징 처리 -->
+                <nav th:if="${boardDtoList.getTotalElements() != 0}" aria-label="Page navigation example">
                     <ul class="pagination justify-content-center">
                         <li class="page-item" th:classappend="${1 == boardDtoList.pageable.pageNumber + 1} ? 'disabled'">
-                            <a class="page-link" th:href="@{/board/list(page=${prev})}" tabindex="-1" aria-disabled="true">이전</a>
+                            <a class="page-link" th:if="*{searchType == null && keyword == null}"  th:href="@{/board/list(page=${prev})}" tabindex="-1" aria-disabled="true">이전</a>
+                            <a class="page-link" th:unless="*{searchType == null && keyword == null}"  th:href="@{/board/list(page=${prev},searchType=*{searchType},keyword=*{keyword})}" tabindex="-1" aria-disabled="true">이전</a>
                         </li>
                         <li class="page-item" th:classappend="${page == boardDtoList.pageable.pageNumber + 1} ? 'disabled'" th:each="page : ${#numbers.sequence(startPage, endPage)}">
-                            <a class="page-link" th:href="@{/board/list(page=${page})}" th:text="${page}">1</a>
+                            <a class="page-link" th:if="*{searchType == null && keyword == null}" th:href="@{/board/list(page=${page})}" th:text="${page}">1</a>
+                            <a class="page-link" th:unless="*{searchType == null && keyword == null}" th:href="@{/board/list(page=${page},searchType=*{searchType},keyword=*{keyword})}" th:text="${page}">1</a>
                         </li>
                         <li class="page-item" th:classappend="${boardDtoList.totalPages == boardDtoList.pageable.pageNumber + 1} ? 'disabled'">
-                            <a class="page-link" th:href="@{/board/list(page=${next})}">다음</a>
+                            <a class="page-link" th:if="*{searchType == null || keyword == null}" th:href="@{/board/list(page=${next})}">다음</a>
+                            <a class="page-link" th:unless="*{searchType == null && keyword == null}" th:href="@{/board/list(page=${next},searchType=*{searchType},keyword=*{keyword})}">다음</a>
                         </li>
                     </ul>
                 </nav>
                 <!-- // 페이징 처리 -->
             </div>
 
-            <a style="float: right" class="btn btn-primary" th:href="@{/board/post}">글쓰기</a>
+            <a style="float: right" class="btn btn-primary" th:if="*{searchType == null || keyword == null}" th:href="@{/board/post(page=${page})}">글쓰기</a>
+            <a style="float: right" class="btn btn-primary" th:unless="*{searchType == null || keyword == null}" th:href="@{/board/post(page=${page}, searchType=*{searchType}, keyword=*{keyword})}">글쓰기</a>
 
         </main>
     </div>
@@ -100,5 +109,10 @@
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
 
+
+    <script>
+
+
+    </script>
 </body>
 </html>

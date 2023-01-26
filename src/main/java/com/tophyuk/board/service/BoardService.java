@@ -2,6 +2,7 @@ package com.tophyuk.board.service;
 
 import com.tophyuk.board.domain.Board;
 import com.tophyuk.board.dto.BoardDto;
+import com.tophyuk.board.dto.PaginationDto;
 import com.tophyuk.board.dto.SearchDto;
 import com.tophyuk.board.repository.BoardRepository;
 import lombok.RequiredArgsConstructor;
@@ -24,12 +25,13 @@ public class BoardService {
     private static final int PAGE_POST_COUNT = 5; // 한 페이지에 존재하는 게시글 수
 
     /**게시글 목록 불러오기 **/
-    public Page<BoardDto> getList(Integer pageNum, SearchDto searchDto) {
+    public Map<String, Object> getList(Integer pageNum, SearchDto searchDto) {
         PageRequest pageRequest = PageRequest.of(pageNum-1, PAGE_POST_COUNT, Sort.by(Sort.Direction.DESC, "createdDate"));
 
+        Map<String, Object> map = new HashMap<String, Object>();
         Page<Board> boardList = null;
 
-        if(searchDto.getSearchType() == null){
+        if(searchDto.getSearchType() == null || searchDto.getKeyword() == null){
             boardList = boardRepository.findAll(pageRequest);
         } else if(searchDto.getSearchType().equals("title")) {
             boardList = boardRepository.findByTitleContaining(searchDto.getKeyword(), pageRequest);
@@ -41,43 +43,20 @@ public class BoardService {
 
         Page<BoardDto> boardDtoList = new BoardDto().toPageBoardDto(boardList); // Page<Entity> -> Page<Dto> 변환.
 
-        return boardDtoList;
-
-    }
-
-    /** 게시글 목록 페이징 처리 **/
-    public Map<String, Object> getPaging(Integer pageNum){
-        PageRequest pageRequest = PageRequest.of(pageNum-1, PAGE_POST_COUNT, Sort.by(Sort.Direction.ASC, "createdDate"));
-
-        Page<Board> boardList = boardRepository.findAll(pageRequest);
-        Page<BoardDto> boardDtoList = new BoardDto().toPageBoardDto(boardList); // Page<Entity> -> Page<Dto> 변환.
-
-        Map<String, Object> map = new HashMap<String, Object>();
-
-        int endPage = (int) (Math.ceil(pageNum / 5.0 )) * PAGE_POST_COUNT;
-        int startPage = endPage - (PAGE_POST_COUNT-1);
         int totalPages = boardDtoList.getTotalPages();
         long totalCnt = boardDtoList.getTotalElements();
 
-        if( (int) (Math.ceil(totalCnt) * 1.0) / PAGE_POST_COUNT < endPage) {
-            endPage = ((int) (Math.ceil(totalCnt) * 1.0) / PAGE_POST_COUNT) + 1;
-        }
-
-        int prevNext = pageNum / 5;
-
-        int prev = (prevNext * PAGE_POST_COUNT) - (PAGE_POST_COUNT-1) ;
-        int next = ((prevNext + 1) * PAGE_POST_COUNT) + 1;
-
-        prev = prev < 1 ? 1 : prev;
-        next = next > totalPages ? totalPages : next;
+        log.info("totalPages = {}", totalPages);
+        log.info("totalCnt = {}", totalCnt);
 
 
-        map.put("prev", prev);
-        map.put("next", next);
-        map.put("startPage", startPage);
-        map.put("endPage", endPage);
+        PaginationDto paginationDto = new PaginationDto(pageNum, totalPages, totalCnt);
+
+        map.put("paginationDto", paginationDto);
+        map.put("boardDtoList", boardDtoList);
 
         return map;
+
     }
 
     /** 게시판 조회 **/

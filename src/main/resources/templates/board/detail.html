@@ -62,13 +62,15 @@
             </table>
 
             <!-- 목록/수정/삭제 -->
-            <div class="d-grid gap-2 d-md-flex justify-content-md-end">
-                <a th:href="@{/board/list(page=${page})}" class="btn btn-secondary" role="button" aria-disabled="true">목록</a>
-                <a th:href="@{/board/edit/{id}(id=${boardDto.id}, page=${page})}" class="btn btn-primary me-md-2" role="button" aria-disabled="true">수정</a>
+            <div class="d-grid gap-2 d-md-flex justify-content-md-end" th:object="${searchDto}">
+                <a th:if="*{searchType == null && keyword == null}" th:href="@{/board/list(page=${page})}" class="btn btn-secondary" role="button" aria-disabled="true">목록</a>
+                <a th:unless="*{searchType == null && keyword == null}" th:href="@{/board/list(page=${page}, searchType=*{searchType}, keyword=*{keyword})}" class="btn btn-secondary" role="button" aria-disabled="true">목록</a>
+                <a th:if="*{searchType == null && keyword == null}" th:href="@{/board/edit/{id}(id=${boardDto.id}, page=${page})}" class="btn btn-primary me-md-2" role="button" aria-disabled="true">수정</a>
+                <a th:unless="*{searchType == null && keyword == null}" th:href="@{/board/edit/{id}(id=${boardDto.id}, page=${page}, searchType=*{searchType}, keyword=*{keyword})}" class="btn btn-primary me-md-2" role="button" aria-disabled="true">수정</a>
                 <form id="delete-form" th:action="@{|/board/${boardDto.id}|}" method="post">
                     <input type="hidden" name="_method" value="delete"/>
-                    <button class="btn btn-warning" id="delete-btn">삭제</button>
                 </form>
+                <button type="button" th:onclick="deletePost([[${boardDto.id}]]);" class="btn btn-warning">삭제</button>
             </div>
 
 
@@ -82,5 +84,20 @@
 <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
+
+<th:block layout:fragment="script">
+    <script th:inline="javascript">
+    function deletePost(id) {
+
+      if ( !confirm(id + '번 게시글을 삭제할까요?') ) {
+        return false;
+      }
+
+      document.getElementById('delete-form').submit();
+    }
+
+  </script>
+</th:block>
+
 </body>
 </html>
