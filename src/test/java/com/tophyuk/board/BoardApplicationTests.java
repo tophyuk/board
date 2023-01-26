@@ -3,17 +3,13 @@ package com.tophyuk.board;
 import com.tophyuk.board.domain.Board;
 import com.tophyuk.board.dto.BoardDto;
 import com.tophyuk.board.repository.BoardRepository;
-import org.assertj.core.api.Assert;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.data.domain.Page;
-import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Optional;
 
 @SpringBootTest
@@ -127,16 +123,6 @@ class BoardApplicationTests {
 
 	 	//then
 		Assertions.assertThat(board.getTitle()).isNotEqualTo(saveBoard.getTitle());
-	}
-
-	@Test
-	@DisplayName("게시글 검색 테스트")
-	void search() {
-
-		String searchType="title";
-		String keyword="제목";
-
-
 	}
 
 }
