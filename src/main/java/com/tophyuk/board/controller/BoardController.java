@@ -4,16 +4,13 @@ import com.tophyuk.board.dto.BoardDto;
 import com.tophyuk.board.dto.PaginationDto;
 import com.tophyuk.board.dto.SearchDto;
 import com.tophyuk.board.service.BoardService;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import java.util.List;
 import java.util.Map;
 
 @Controller
@@ -21,7 +18,6 @@ import java.util.Map;
 @RequiredArgsConstructor
 @RequestMapping("/board")
 public class BoardController {
-
 
     private final BoardService boardService;
 
