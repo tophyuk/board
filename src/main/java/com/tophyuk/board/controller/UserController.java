@@ -1,8 +1,11 @@
 package com.tophyuk.board.controller;
 
+import com.tophyuk.board.dto.UserDto;
+import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -29,14 +32,24 @@ public class UserController {
     }
 
     @GetMapping("/signup")
-    public String goSignup(Model model) {
+    public String goSignup(UserDto userDto, Model model) {
 
+        model.addAttribute("userDto", userDto);
         model.addAttribute("regions", regions());
         return "signup";
     }
 
     @PostMapping("signup")
-    public String signup() {
+    public String signup(@Valid UserDto userDto, BindingResult bindingResult) {
+
+        if(bindingResult.hasErrors()) {
+            log.info("errors={}", bindingResult);
+            return "/signup";
+        }
+
+        //todo - 성공로직
+
+
 
         return "redirect:/";
     }

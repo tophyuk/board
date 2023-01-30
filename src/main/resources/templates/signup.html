@@ -26,6 +26,13 @@
       -moz-box-shadow: 0 8px 20px 0 rgba(0, 0, 0, 0.15);
       box-shadow: 0 8px 20px 0 rgba(0, 0, 0, 0.15)
     }
+
+    .field-error{
+        border-color: #dc3545;
+        color: #dc3545;
+    }
+
+
   </style>
 </head>
 
@@ -34,50 +41,50 @@
     <div class="input-form-backgroud row">
         <div class="input-form col-md-12 mx-auto">
             <h4 class="mb-3">회원가입</h4>
-            <form class="validation-form" novalidate th:action method="post">
+            <form class="" th:object="${userDto}" th:action method="post">
                 <div class="row">
                     <div class="mb-3">
-                        <label for="name">이름</label>
-                        <input type="text" class="form-control" id="name" placeholder="김반장" value="" required>
-                        <div class="invalid-feedback">
-                            이름을 입력해주세요.
+                        <label for="name">사용자 명</label>
+                        <input type="text" class="form-control" th:field="*{username}" th:errorclass="field-error" id="name" placeholder="김반장" required>
+                        <div class="field-error" th:errors="*{username}">
+                            이름 오류
                         </div>
                     </div>
                 </div>
 
                 <div class="mb-3">
                     <label for="email">이메일</label>
-                    <input type="email" class="form-control" id="email" placeholder="you@example.com" required>
-                    <div class="invalid-feedback">
-                        이메일을 입력해주세요.
+                    <input type="email" class="form-control" th:field="*{email}" th:errorclass="field-error" id="email" placeholder="you@example.com" required>
+                    <div class="field-error" th:errors="*{email}">
+                        이메일 오류
                     </div>
                 </div>
 
                 <div class="mb-3">
                     <label for="password">비밀번호</label>
-                    <input type="password" class="form-control" id="password" placeholder="비밀번호를 입력하세요." required>
-                    <div class="invalid-feedback">
-                        비밀번호를 입력해주세요.
+                    <input type="password" class="form-control" th:field="*{password}" th:errorclass="field-error" id="password" placeholder="비밀번호를 입력하세요." required>
+                    <div class="field-error" th:errors="*{password}">
+                        비밀번호 오류
                     </div>
                 </div>
 
                 <div class="mb-3">
                     <label for="password2">비밀번호 확인</label>
-                    <input type="password" class="form-control" id="password2" placeholder="비밀번호를 다시 한 번 입력하세요." required>
-                    <div class="invalid-feedback">
-                        비밀번호 확인을 입력해주세요.
+                    <input type="password" class="form-control" th:field="*{password2}" th:errorclass="field-error" id="password2" placeholder="비밀번호를 다시 한 번 입력하세요." required>
+                    <div class="field-error" th:errors="*{password2}">
+                        비밀번호 확인 오류
                     </div>
                 </div>
 
                 <div class="row">
                     <div class="mb-3">
                         <label for="region">거주 지역</label>
-                        <select th:field="*{regions}" class="form-select" aria-label="Default select example" id="region" required>
+                        <select class="form-select" th:field="*{region}" aria-label="Default select example" id="region" required>
                             <option value="" selected>선택</option>
                             <option th:each="region : ${regions}" th:value="${region.key}" th:text="${region.value}">서울</option>
                         </select>
-                        <div class="invalid-feedback">
-                            지역을 선택해주세요.
+                        <div class="field-error" th:errors="*{region}">
+                            지역 오류
                         </div>
                     </div>
                 </div>
@@ -95,22 +102,22 @@
         <p class="mb-1">&copy; 2021 YD</p>
     </footer>
 </div>
-<script>
-    window.addEventListener('load', () => {
-      const forms = document.getElementsByClassName('validation-form');
+<!--<script>-->
+<!--    window.addEventListener('load', () => {-->
+<!--      const forms = document.getElementsByClassName('validation-form');-->
 
-      Array.prototype.filter.call(forms, (form) => {
-        form.addEventListener('submit', function (event) {
-          if (form.checkValidity() === false) {
-            event.preventDefault();
-            event.stopPropagation();
-          }
+<!--      Array.prototype.filter.call(forms, (form) => {-->
+<!--        form.addEventListener('submit', function (event) {-->
+<!--          if (form.checkValidity() === false) {-->
+<!--            event.preventDefault();-->
+<!--            event.stopPropagation();-->
+<!--          }-->
 
-          form.classList.add('was-validated');
-        }, false);
-      });
-    }, false);
-  </script>
+<!--          form.classList.add('was-validated');-->
+<!--        }, false);-->
+<!--      });-->
+<!--    }, false);-->
+<!--  </script>-->
 </body>
 
 </html>
