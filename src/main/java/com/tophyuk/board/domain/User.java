@@ -15,7 +15,7 @@ public class User extends Time{
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    @Column(length = 10, nullable = false)
+    @Column(unique = true, length = 10, nullable = false)
     @Size(min = 2, max = 10)
     private String userName;
 
