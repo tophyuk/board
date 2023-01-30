@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html xmlns:th="http://www.thymeleaf.org">
 
 <head>
     <meta charset="UTF-8">
@@ -34,11 +34,11 @@
     <div class="input-form-backgroud row">
         <div class="input-form col-md-12 mx-auto">
             <h4 class="mb-3">회원가입</h4>
-            <form class="validation-form" novalidate>
+            <form class="validation-form" novalidate th:action method="post">
                 <div class="row">
                     <div class="mb-3">
                         <label for="name">이름</label>
-                        <input type="text" class="form-control" id="name" placeholder="" value="" required>
+                        <input type="text" class="form-control" id="name" placeholder="김반장" value="" required>
                         <div class="invalid-feedback">
                             이름을 입력해주세요.
                         </div>
@@ -54,26 +54,27 @@
                 </div>
 
                 <div class="mb-3">
-                    <label for="address">주소</label>
-                    <input type="text" class="form-control" id="address" placeholder="서울특별시 강남구" required>
+                    <label for="password">비밀번호</label>
+                    <input type="password" class="form-control" id="password" placeholder="비밀번호를 입력하세요." required>
                     <div class="invalid-feedback">
-                        주소를 입력해주세요.
+                        비밀번호를 입력해주세요.
                     </div>
                 </div>
 
                 <div class="mb-3">
-                    <label for="address2">상세주소<span class="text-muted">&nbsp;(필수 아님)</span></label>
-                    <input type="text" class="form-control" id="address2" placeholder="상세주소를 입력해주세요.">
+                    <label for="password2">비밀번호 확인</label>
+                    <input type="password" class="form-control" id="password2" placeholder="비밀번호를 다시 한 번 입력하세요." required>
+                    <div class="invalid-feedback">
+                        비밀번호 확인을 입력해주세요.
+                    </div>
                 </div>
 
                 <div class="row">
                     <div class="mb-3">
-                        <label for="root">거주 지역</label>
-                        <select class="form-select" aria-label="Default select example" id="root">
-                            <option selected>선택</option>
-                            <option value="1">One</option>
-                            <option value="2">Two</option>
-                            <option value="3">Three</option>
+                        <label for="region">거주 지역</label>
+                        <select th:field="*{regions}" class="form-select" aria-label="Default select example" id="region" required>
+                            <option value="" selected>선택</option>
+                            <option th:each="region : ${regions}" th:value="${region.key}" th:text="${region.value}">서울</option>
                         </select>
                         <div class="invalid-feedback">
                             지역을 선택해주세요.
