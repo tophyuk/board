@@ -1,8 +1,11 @@
 package com.tophyuk.board;
 
 import com.tophyuk.board.domain.Board;
+import com.tophyuk.board.domain.User;
 import com.tophyuk.board.dto.BoardDto;
+import com.tophyuk.board.dto.UserDto;
 import com.tophyuk.board.repository.BoardRepository;
+import com.tophyuk.board.repository.UserRepository;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -18,6 +21,9 @@ class BoardApplicationTests {
 	@Autowired
 	private BoardRepository boardRepository;
 
+	@Autowired
+	private UserRepository userRepository;
+
 	String title = "오늘도 강추위가 예상됩니다.";
 	String writer = "홍길동";
 	String content = "내용을 적으려니까 적을게 참 많네요" +
@@ -26,7 +32,7 @@ class BoardApplicationTests {
 
 	@Test
 	@DisplayName("게시글 등록 테스트")
-	void save(){
+	void save() {
 
 		//given
 		BoardDto boardDto = new BoardDto();
@@ -45,9 +51,9 @@ class BoardApplicationTests {
 
 	@Test
 	@DisplayName("JPA Auditing 테스트")
-	void auditing(){
+	void auditing() {
 		//given
-		LocalDateTime now = LocalDateTime.of(2022,01,10,0,0,0);
+		LocalDateTime now = LocalDateTime.of(2022, 01, 10, 0, 0, 0);
 
 		BoardDto boardDto = new BoardDto();
 		boardDto.setTitle(title);
@@ -82,7 +88,7 @@ class BoardApplicationTests {
 		Assertions.assertThat(boardDto.getId()).isEqualTo(id);
 
 	}
-	
+
 	@Test
 	@DisplayName("게시글 삭제 테스트")
 	void delete() {
@@ -121,8 +127,32 @@ class BoardApplicationTests {
 		//when
 		Board saveBoard = boardRepository.save(boardDto.toEntity());
 
-	 	//then
+		//then
 		Assertions.assertThat(board.getTitle()).isNotEqualTo(saveBoard.getTitle());
 	}
 
+
+	@Test
+	@DisplayName("회원가입 테스트")
+	void signup() {
+
+		String username="홍길동";
+		String email="gildong@naver.com";
+		String password="ghdrlfehd1!";
+		String region="DAEGU";
+
+		//given
+		UserDto userDto = new UserDto();
+		userDto.setUsername(username);
+		userDto.setEmail(email);
+		userDto.setPassword(password);
+		userDto.setRegion(region);
+
+		//when
+		long id = userRepository.save(userDto.toEntity()).getId();
+		User findUser = userRepository.findById(id).get();
+
+		//then
+		Assertions.assertThat(findUser.getEmail()).isEqualTo(email);
+	}
 }
