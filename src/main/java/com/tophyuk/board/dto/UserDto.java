@@ -1,6 +1,10 @@
 package com.tophyuk.board.dto;
 
+import com.tophyuk.board.domain.Role;
 import com.tophyuk.board.domain.User;
+import jakarta.persistence.Column;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import lombok.Builder;
@@ -28,11 +32,16 @@ public class UserDto {
     @NotBlank(message = "지역은 필수 입력 값입니다.")
     private String region;
 
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private Role role;
+
     @Builder
-    public UserDto(String username, String password, String region) {
+    public UserDto(String username, String password, String region, Role role) {
         this.username = username;
         this.password = password;
         this.region = region;
+        this.role = role;
     }
 
     public User toEntity() {
@@ -41,6 +50,7 @@ public class UserDto {
                 .email(email)
                 .password(password)
                 .region(region)
+                .role(Role.USER)
                 .build();
 
         return user;

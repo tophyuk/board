@@ -29,12 +29,18 @@ public class User extends Time{
     @Column(nullable = false)
     private String region;
 
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private Role role;
+
     @Builder
-    public User(long id, String userName, String email, String password, String region) {
+    public User(long id, String userName, String email, String password, String region, Role role) {
         this.id = id;
         this.userName = userName;
         this.email = email;
         this.password = password;
         this.region = region;
+        this.role = role;
     }
+
 }
