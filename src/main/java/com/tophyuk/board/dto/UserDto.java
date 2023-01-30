@@ -2,6 +2,7 @@ package com.tophyuk.board.dto;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -25,4 +26,11 @@ public class UserDto {
 
     @NotBlank(message = "지역은 필수 입력 값입니다.")
     private String region;
+
+    @Builder
+    public UserDto(String username, String password, String region) {
+        this.username = username;
+        this.password = password;
+        this.region = region;
+    }
 }
