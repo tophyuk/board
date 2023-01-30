@@ -1,7 +1,9 @@
 package com.tophyuk.board.controller;
 
 import com.tophyuk.board.dto.UserDto;
+import com.tophyuk.board.service.UserService;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -15,7 +17,10 @@ import java.util.Map;
 
 @Controller
 @Slf4j
+@RequiredArgsConstructor
 public class UserController {
+
+    private final UserService userService;
 
     @ModelAttribute("regions")
     public Map<String, String> regions() {
@@ -48,9 +53,8 @@ public class UserController {
         }
 
         //todo - 성공로직
+        userService.signup(userDto);
 
-
-
-        return "redirect:/";
+        return "redirect:/login";
     }
 }

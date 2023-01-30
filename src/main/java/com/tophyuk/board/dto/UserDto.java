@@ -1,5 +1,6 @@
 package com.tophyuk.board.dto;
 
+import com.tophyuk.board.domain.User;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import lombok.Builder;
@@ -33,4 +34,17 @@ public class UserDto {
         this.password = password;
         this.region = region;
     }
+
+    public User toEntity() {
+        User user = User.builder()
+                .userName(username)
+                .email(email)
+                .password(password)
+                .region(region)
+                .build();
+
+        return user;
+
+    }
+
 }
