@@ -155,4 +155,40 @@ class BoardApplicationTests {
 		//then
 		Assertions.assertThat(findUser.getEmail()).isEqualTo(email);
 	}
+
+	@Test
+	@DisplayName("이름 중복 체크")
+	void nameCheck() {
+
+		//given
+		String username = "홍길동2";
+		UserDto userDto = new UserDto();
+		userDto.setUsername(username);
+
+
+		//when
+		boolean existsByUsername = userRepository.existsByUsername(userDto.toEntity().getUsername());
+
+		//then
+		Assertions.assertThat(existsByUsername).isEqualTo(true);
+
+	}
+
+
+	@Test
+	@DisplayName("이메일 중복 체크")
+	void emailCheck() {
+
+		//given
+		String email = "gildong@naver.com";
+		UserDto userDto = new UserDto();
+		userDto.setEmail(email);
+
+		//when
+		boolean existsByEmail = userRepository.existsByEmail(userDto.toEntity().getEmail());
+
+		//then
+		Assertions.assertThat(existsByEmail).isEqualTo(true);
+
+	}
 }
