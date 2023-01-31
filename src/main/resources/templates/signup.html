@@ -46,7 +46,7 @@
                     <div class="mb-3">
                         <label for="name">사용자 명</label>
                         <input type="text" class="form-control" th:field="*{username}" th:errorclass="field-error" id="name" placeholder="김반장" required>
-                        <div class="field-error" th:errors="*{username}">
+                        <div class="field-error" th:if="${#fields.hasErrors('username')}" th:errors="*{username}">
                             이름 오류
                         </div>
                     </div>
@@ -55,7 +55,7 @@
                 <div class="mb-3">
                     <label for="email">이메일</label>
                     <input type="email" class="form-control" th:field="*{email}" th:errorclass="field-error" id="email" placeholder="you@example.com" required>
-                    <div class="field-error" th:errors="*{email}">
+                    <div class="field-error" th:if="${#fields.hasErrors('email')}" th:errors="*{email}">
                         이메일 오류
                     </div>
                 </div>
@@ -63,7 +63,7 @@
                 <div class="mb-3">
                     <label for="password">비밀번호</label>
                     <input type="password" class="form-control" th:field="*{password}" th:errorclass="field-error" id="password" placeholder="비밀번호를 입력하세요." required>
-                    <div class="field-error" th:errors="*{password}">
+                    <div class="field-error" th:if="${#fields.hasErrors('password')}" th:errors="*{password}">
                         비밀번호 오류
                     </div>
                 </div>
@@ -71,7 +71,7 @@
                 <div class="mb-3">
                     <label for="password2">비밀번호 확인</label>
                     <input type="password" class="form-control" th:field="*{password2}" th:errorclass="field-error" id="password2" placeholder="비밀번호를 다시 한 번 입력하세요." required>
-                    <div class="field-error" th:errors="*{password2}">
+                    <div class="field-error" th:if="${#fields.hasErrors('password')}" th:errors="*{password}">
                         비밀번호 확인 오류
                     </div>
                 </div>

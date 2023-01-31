@@ -37,8 +37,9 @@ public class UserDto {
     private Role role;
 
     @Builder
-    public UserDto(String username, String password, String region, Role role) {
+    public UserDto(String username, String email, String password, String region, Role role) {
         this.username = username;
+        this.email = email;
         this.password = password;
         this.region = region;
         this.role = role;
@@ -46,7 +47,7 @@ public class UserDto {
 
     public User toEntity() {
         User user = User.builder()
-                .userName(username)
+                .username(username)
                 .email(email)
                 .password(password)
                 .region(region)
@@ -55,6 +56,20 @@ public class UserDto {
 
         return user;
 
+    }
+
+    // 추후에 사용 예정
+    // user 조회시에 enttity -> DAO 변환
+    public UserDto toUserDto(User user){
+
+        UserDto userDto = UserDto.builder()
+                .username(user.getUsername())
+                .email(user.getEmail())
+                .password(user.getPassword())
+                .region(user.getRegion())
+                .role(user.getRole())
+                .build();
+        return userDto;
     }
 
 }
