@@ -17,7 +17,7 @@ public class User extends Time{
 
     @Column(unique = true, length = 10, nullable = false)
     @Size(min = 2, max = 10)
-    private String userName;
+    private String username;
 
     @Column(unique = true, nullable = false)
     private String email;
@@ -34,9 +34,9 @@ public class User extends Time{
     private Role role;
 
     @Builder
-    public User(long id, String userName, String email, String password, String region, Role role) {
+    public User(long id, String username, String email, String password, String region, Role role) {
         this.id = id;
-        this.userName = userName;
+        this.username = username;
         this.email = email;
         this.password = password;
         this.region = region;
