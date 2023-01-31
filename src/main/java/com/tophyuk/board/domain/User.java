@@ -22,8 +22,7 @@ public class User extends Time{
     @Column(unique = true, nullable = false)
     private String email;
 
-    @Column(nullable = false)
-    @Size(min = 8, max = 16)
+    @Column(length = 100, nullable = false)
     private String password;
 
     @Column(nullable = false)
