@@ -32,8 +32,8 @@ public class UserValidator implements Validator {
         }
 
         // 사용자명 중복 체크
-        if (userService.checkUsername(userDto.toEntity().getUsername())) {
-            errors.rejectValue("username", "userDuplication", "이미 사용중인 사용자명 입니다.");
+        if (userService.checkNickname(userDto.toEntity().getNickname())) {
+            errors.rejectValue("nickname", "nicknameDuplication", "이미 사용중인 닉네임 입니다.");
         }
 
         // 이메일 중복 체크

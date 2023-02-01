@@ -10,13 +10,19 @@ import jakarta.validation.constraints.Pattern;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+
+import java.util.ArrayList;
+import java.util.Collection;
 
 @Data
 @NoArgsConstructor
-public class UserDto {
+public class UserDto implements UserDetails {
     @NotBlank(message = "사용자 명은 필수 입력 값입니다.")
     @Pattern(regexp = "^[ㄱ-ㅎ가-힣a-z0-9-_]{2,10}$", message = "사용자명은 특수문자를 제외한 2~10자리여야 합니다.")
-    private String username;
+    private String nickname;
 
     @NotBlank(message = "이메일은 필수 입력 값입니다.")
     @Pattern(regexp = "^(?:\\w+\\.?)*\\w+@(?:\\w+\\.)+\\w+$", message = "이메일 형식이 올바르지 않습니다.")
@@ -37,8 +43,8 @@ public class UserDto {
     private Role role;
 
     @Builder
-    public UserDto(String username, String email, String password, String region, Role role) {
-        this.username = username;
+    public UserDto(String nickname, String email, String password, String region, Role role) {
+        this.nickname = nickname;
         this.email = email;
         this.password = password;
         this.region = region;
@@ -47,7 +53,7 @@ public class UserDto {
 
     public User toEntity() {
         User user = User.builder()
-                .username(username)
+                .nickname(nickname)
                 .email(email)
                 .password(password)
                 .region(region)
@@ -58,12 +64,11 @@ public class UserDto {
 
     }
 
-    // 추후에 사용 예정
-    // user 조회시에 enttity -> DAO 변환
+    // user 조회시에 Entity -> DAO 변환
     public UserDto toUserDto(User user){
 
         UserDto userDto = UserDto.builder()
-                .username(user.getUsername())
+                .nickname(user.getNickname())
                 .email(user.getEmail())
                 .password(user.getPassword())
                 .region(user.getRegion())
@@ -72,4 +77,40 @@ public class UserDto {
         return userDto;
     }
 
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        Collection<GrantedAuthority> authorities = new ArrayList<>();
+        authorities.add(new SimpleGrantedAuthority(role.getKey()));
+        return authorities;
+    }
+
+    @Override
+    public String getUsername() {
+        return this.email;
+    }
+
+    @Override
+    public String getPassword(){
+        return this.password;
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return true;
+    }
 }

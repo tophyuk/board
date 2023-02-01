@@ -44,9 +44,9 @@
             <form class="" th:object="${userDto}" th:action method="post">
                 <div class="row">
                     <div class="mb-3">
-                        <label for="name">사용자 명</label>
-                        <input type="text" class="form-control" th:field="*{username}" th:errorclass="field-error" id="name" placeholder="김반장" required>
-                        <div class="field-error" th:if="${#fields.hasErrors('username')}" th:errors="*{username}">
+                        <label for="name">닉네임</label>
+                        <input type="text" class="form-control" th:field="*{nickname}" th:errorclass="field-error" id="name" placeholder="김반장" required>
+                        <div class="field-error" th:if="${#fields.hasErrors('nickname')}" th:errors="*{nickname}">
                             이름 오류
                         </div>
                     </div>
