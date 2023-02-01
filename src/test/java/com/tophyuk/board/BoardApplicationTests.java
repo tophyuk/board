@@ -11,6 +11,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
@@ -136,14 +137,14 @@ class BoardApplicationTests {
 	@DisplayName("회원가입 테스트")
 	void signup() {
 
-		String username="홍길동";
+		String nickname="홍길동";
 		String email="gildong@naver.com";
 		String password="ghdrlfehd1!";
 		String region="DAEGU";
 
 		//given
 		UserDto userDto = new UserDto();
-		userDto.setUsername(username);
+		userDto.setNickname(nickname);
 		userDto.setEmail(email);
 		userDto.setPassword(password);
 		userDto.setRegion(region);
@@ -163,11 +164,11 @@ class BoardApplicationTests {
 		//given
 		String username = "홍길동2";
 		UserDto userDto = new UserDto();
-		userDto.setUsername(username);
+		userDto.setNickname(username);
 
 
 		//when
-		boolean existsByUsername = userRepository.existsByUsername(userDto.toEntity().getUsername());
+		boolean existsByUsername = userRepository.existsByNickname(userDto.toEntity().getNickname());
 
 		//then
 		Assertions.assertThat(existsByUsername).isEqualTo(true);
@@ -189,6 +190,50 @@ class BoardApplicationTests {
 
 		//then
 		Assertions.assertThat(existsByEmail).isEqualTo(true);
+
+	}
+
+	@Test
+	@DisplayName("닉네임 중복 체크")
+	void nicknameCheck() {
+
+		//given
+		String nickname ="김반장";
+		UserDto userDto = new UserDto();
+		userDto.setNickname(nickname);
+
+		//then
+		boolean existsByNickname = userRepository.existsByNickname(userDto.toEntity().getNickname());
+
+		//when
+		Assertions.assertThat(existsByNickname).isEqualTo(true);
+	}
+
+	@Test
+	@DisplayName("이메일로 사용자 찾기")
+	void userByEmail() {
+
+		//given
+		String email = "kim@naver.com";
+
+		//then
+		User user = userRepository.findByEmail(email);
+
+		if (user == null) {
+			throw new UsernameNotFoundException(email + " is not found.");
+		}
+
+		UserDto userDto = new UserDto().toUserDto(user); // User<Entity> -> UserDto 변환.
+
+		//when
+		Assertions.assertThat(userDto.getEmail()).isEqualTo(email);
+
+	}
+
+	@Test
+	@DisplayName("스프링시큐리티 로그인")
+	void securityLogin(){
+
 
 	}
 }
