@@ -50,3 +50,9 @@ html, body {
 #inputBox button {
   padding: 3px 5px;
 }
+
+.error-message {
+    color: red;
+    font-weight : bold;
+    background-color : #ffc0cb
+}

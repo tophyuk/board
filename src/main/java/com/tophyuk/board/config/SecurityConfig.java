@@ -1,34 +1,32 @@
 package com.tophyuk.board.config;
 
-import jakarta.servlet.ServletException;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
+import com.tophyuk.board.handler.CustomAuthFailureHandler;
+import com.tophyuk.board.handler.CustomAuthSuccessHandler;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.authentication.AuthenticationFailureHandler;
-import org.springframework.security.web.header.writers.frameoptions.XFrameOptionsHeaderWriter;
-import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
-import java.io.IOException;
 
 @Slf4j
 @Configuration
+@RequiredArgsConstructor
 @EnableWebSecurity
 public class SecurityConfig {
 
+    private final CustomAuthSuccessHandler customAuthSuccessHandler;
+    private final CustomAuthFailureHandler customAuthFailureHandler;
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 
         http
+                .csrf().disable()
                 .authorizeHttpRequests((requests) -> requests
-                        .requestMatchers("/css/**", "/img/**", "/signup").permitAll()
+                        .requestMatchers("/css/**", "/img/**", "/signup", "/login").permitAll()
                         .requestMatchers("/admin").hasRole("ADMIN")
                         .requestMatchers("/").hasAnyRole("USER", "ADMIN")
 
@@ -40,18 +38,11 @@ public class SecurityConfig {
                         .passwordParameter("password")            // 패스워드 파라미터명 설정
                         .loginProcessingUrl("/login/action")
                         .defaultSuccessUrl("/")
-                        .failureHandler(
-                                new AuthenticationFailureHandler() {
-                                    @Override
-                                    public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response, AuthenticationException exception) throws IOException, ServletException {
-                                        log.info("login fail exception : " + exception.getClass());
-                                        response.sendRedirect("/signup");
-                                    }
-                                }
-                        )
+                        .successHandler(customAuthSuccessHandler)
+                        .failureHandler(customAuthFailureHandler)
                         .permitAll()
                 )
-                .logout((logout) -> logout.permitAll());
+                .logout().logoutSuccessUrl("/");
 
 
         return http.build();
