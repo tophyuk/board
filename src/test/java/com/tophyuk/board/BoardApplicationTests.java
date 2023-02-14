@@ -1,16 +1,19 @@
 package com.tophyuk.board;
 
 import com.tophyuk.board.domain.Board;
+import com.tophyuk.board.domain.Role;
 import com.tophyuk.board.domain.User;
 import com.tophyuk.board.dto.BoardDto;
 import com.tophyuk.board.dto.UserDto;
 import com.tophyuk.board.repository.BoardRepository;
 import com.tophyuk.board.repository.UserRepository;
+import com.tophyuk.board.service.UserService;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 import java.time.LocalDateTime;
@@ -24,6 +27,9 @@ class BoardApplicationTests {
 
 	@Autowired
 	private UserRepository userRepository;
+
+	@Autowired
+	private UserService userService;
 
 	String title = "오늘도 강추위가 예상됩니다.";
 	String writer = "홍길동";
@@ -217,11 +223,7 @@ class BoardApplicationTests {
 		String email = "kim@naver.com";
 
 		//then
-		User user = userRepository.findByEmail(email);
-
-		if (user == null) {
-			throw new UsernameNotFoundException(email + " is not found.");
-		}
+		User user = userRepository.findByEmail(email).orElseThrow(() -> new UsernameNotFoundException(email + "는 존재하지 않는 이메일입니다."));
 
 		UserDto userDto = new UserDto().toUserDto(user); // User<Entity> -> UserDto 변환.
 
@@ -233,6 +235,24 @@ class BoardApplicationTests {
 	@Test
 	@DisplayName("스프링시큐리티 로그인")
 	void securityLogin(){
+
+		//given
+		String nickname = "김반장2";
+		String email = "kim2@naver.com";
+		String password = "wjdtkd1!";
+		String encodePassword = userService.bCryptPasswordEncoder.encode(password);
+		String region = "SEOUL";
+		Role role = Role.USER;
+
+		UserDto userDto = new UserDto(nickname, email, "", encodePassword, region, role);
+		userService.signup(userDto);
+
+		//then
+		User user = userRepository.findByEmail(email).orElseThrow(() -> new UsernameNotFoundException(email + "는 존재하지 않는 이메일입니다."));
+		UserDetails userDetails = userService.loadUserByUsername(email);
+
+		//when
+		Assertions.assertThat(userDto.getPassword()).isEqualTo(userDetails.getPassword());
 
 
 	}
