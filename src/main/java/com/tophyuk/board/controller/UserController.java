@@ -57,15 +57,20 @@ public class UserController {
     }
 
     @PostMapping("signup")
-    public String signup(@Validated UserDto userDto, BindingResult bindingResult) {
+    public String signup(@Validated UserDto userDto, BindingResult bindingResult, Model model) {
 
-        if(bindingResult.hasErrors()) {
+        if (bindingResult.hasErrors()) {
             log.info("errors={}", bindingResult);
             return "/signup";
         }
 
         //todo - 성공로직
-        userService.signup(userDto);
+        try {
+            userService.signup(userDto);
+        } catch (IllegalStateException e) {
+            model.addAttribute("errorMessage", e.getMessage());
+            return "/signup";
+        }
 
         return "redirect:/login";
     }
