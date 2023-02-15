@@ -28,7 +28,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests((requests) -> requests
                         .requestMatchers("/css/**", "/img/**", "/signup", "/login").permitAll()
                         .requestMatchers("/admin").hasRole("ADMIN")
-                        .requestMatchers("/").hasAnyRole("USER", "ADMIN")
+                        .requestMatchers("/board/**", "/").hasAnyRole("USER", "ADMIN")
 
                         .anyRequest().authenticated()
                 )
@@ -42,8 +42,10 @@ public class SecurityConfig {
                         .failureHandler(customAuthFailureHandler)
                         .permitAll()
                 )
-                .logout().logoutSuccessUrl("/");
-
+                .logout()
+                .logoutUrl("/logout")
+                .logoutSuccessUrl("/login")
+                .deleteCookies("JSESSIONID");
 
         return http.build();
 

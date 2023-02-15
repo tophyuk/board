@@ -52,7 +52,7 @@ public class CustomAuthSuccessHandler implements AuthenticationSuccessHandler {
             // 중요! 인증이 필요한 페이지에 접근시 미인증 상태여서 로그인 페이지로 보낼 경우
             Set<String> roles = AuthorityUtils.authorityListToSet(authentication.getAuthorities());
             if (roles.contains(Role.USER.getKey())) {
-                redirectStrategy.sendRedirect(request, response, "/login");
+                redirectStrategy.sendRedirect(request, response, "/");
             } else if(roles.contains(Role.ADMIN.getKey())) {
                 redirectStrategy.sendRedirect(request, response, "/admin");
             }

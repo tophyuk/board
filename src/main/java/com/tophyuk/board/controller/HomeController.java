@@ -18,15 +18,6 @@ public class HomeController {
         return "index";
     }
 
-    @GetMapping("/login")
-    public String login(@RequestParam(value = "error", required = false) String error,
-                        @RequestParam(value = "errorMessage", required = false) String errorMessage, Model model) {
-
-        model.addAttribute("error", error);
-        model.addAttribute("errorMessage", errorMessage);
-        return "login";
-    }
-
     @GetMapping("/admin")
     public String admin() {
         return "admin";

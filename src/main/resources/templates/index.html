@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <!-- Required meta tags -->
     <meta charset="UTF-8">
@@ -21,9 +22,15 @@
                 <li><a href="#" class="nav-link px-2 link-dark">About</a></li>
             </ul>
 
+            <p th:text="${#authentication.name}"></p>
+            <p th:text="${#authentication.authorities}"></p>
+            <p th:text="${#authentication.authenticated}"></p>
+
             <div class="col-md-3 text-end">
-                <button type="button" class="btn btn-outline-primary me-2">Login</button>
-                <button type="button" class="btn btn-primary">Sign-up</button>
+                <a sec:authorize="!isAuthenticated()" class="btn btn-outline-primary me-2" th:href="@{/login}">로그인</a>
+                <form th:action="@{/logout}" method="POST" sec:authorize="isAuthenticated()">
+                    <button class="btn btn-primary" type="submit">로그아웃</button>
+                </form>
             </div>
         </header>
     </div>
