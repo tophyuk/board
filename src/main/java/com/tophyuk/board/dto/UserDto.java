@@ -13,15 +13,17 @@ import lombok.NoArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Map;
 
 @Data
 @NoArgsConstructor
-public class UserDto implements UserDetails {
+public class UserDto implements UserDetails, OAuth2User{
     @NotBlank(message = "사용자 명은 필수 입력 값입니다.")
-    @Pattern(regexp = "^[ㄱ-ㅎ가-힣a-z0-9-_]{2,10}$", message = "사용자명은 특수문자를 제외한 2~10자리여야 합니다.")
+    @Pattern(regexp = "^[ㄱ-ㅎ가-힣a-z0-9-_]{2,30}$", message = "사용자명은 특수문자를 제외한 2~20자리여야 합니다.")
     private String nickname;
 
     @NotBlank(message = "이메일은 필수 입력 값입니다.")
@@ -41,14 +43,22 @@ public class UserDto implements UserDetails {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private Role role;
+    
+    private String picture;
+
+    private Map<String, Object> attributes;
+
+
 
     @Builder
-    public UserDto(String nickname, String email, String password, String region, Role role) {
+    public UserDto(String nickname, String email, String password, String region, Role role, String picture, Map<String, Object> attributes) {
         this.nickname = nickname;
         this.email = email;
         this.password = password;
         this.region = region;
         this.role = role;
+        this.picture = picture;
+        this.attributes = attributes;
     }
 
     public User toEntity() {
@@ -58,6 +68,7 @@ public class UserDto implements UserDetails {
                 .password(password)
                 .region(region)
                 .role(Role.USER)
+                .picture(picture)
                 .build();
 
         return user;
@@ -73,9 +84,11 @@ public class UserDto implements UserDetails {
                 .password(user.getPassword())
                 .region(user.getRegion())
                 .role(user.getRole())
+                .picture(user.getPicture())
                 .build();
         return userDto;
     }
+
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -112,5 +125,15 @@ public class UserDto implements UserDetails {
     @Override
     public boolean isEnabled() {
         return true;
+    }
+
+    @Override
+    public Map<String, Object> getAttributes() {
+        return attributes;
+    }
+
+    @Override
+    public String getName() {
+       return null;
     }
 }

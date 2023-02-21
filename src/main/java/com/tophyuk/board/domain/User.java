@@ -15,12 +15,15 @@ public class User extends Time{
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    @Column(unique = true, length = 10, nullable = false)
-    @Size(min = 2, max = 10)
+    @Column(unique = true, length = 30, nullable = false)
+    @Size(min = 2, max = 30)
     private String nickname;
 
     @Column(unique = true, nullable = false)
     private String email;
+
+    @Column
+    private String picture;
 
     @Column(length = 100, nullable = false)
     private String password;
@@ -33,10 +36,11 @@ public class User extends Time{
     private Role role;
 
     @Builder
-    public User(long id, String nickname, String email, String password, String region, Role role) {
+    public User(long id, String nickname, String email, String picture, String password, String region, Role role) {
         this.id = id;
         this.nickname = nickname;
         this.email = email;
+        this.picture = picture;
         this.password = password;
         this.region = region;
         this.role = role;
