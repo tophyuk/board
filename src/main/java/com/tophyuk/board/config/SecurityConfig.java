@@ -2,7 +2,7 @@ package com.tophyuk.board.config;
 
 import com.tophyuk.board.handler.CustomAuthFailureHandler;
 import com.tophyuk.board.handler.CustomAuthSuccessHandler;
-import com.tophyuk.board.auth.CustomOAuth2UserService;
+import com.tophyuk.board.service.CustomOAuth2UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
