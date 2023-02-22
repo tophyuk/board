@@ -1,13 +1,10 @@
 package com.tophyuk.board.controller;
 
-import com.tophyuk.board.domain.User;
 import com.tophyuk.board.dto.UserDto;
 import com.tophyuk.board.service.UserService;
 import com.tophyuk.board.validation.UserValidator;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -20,7 +17,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.Optional;
 
 @Controller
 @Slf4j
@@ -64,7 +60,6 @@ public class UserController {
             return "/signup";
         }
 
-        //todo - 성공로직
         try {
             userService.signup(userDto);
         } catch (IllegalStateException e) {
