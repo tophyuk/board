@@ -42,6 +42,7 @@
         <div class="input-form col-md-12 mx-auto">
             <h4 class="mb-3">회원가입</h4>
             <form class="" th:object="${userDto}" th:action method="post">
+                <input type="hidden" th:value="basic" th:name="loginType">
                 <div class="row">
                     <div class="mb-3">
                         <label for="name">닉네임</label>

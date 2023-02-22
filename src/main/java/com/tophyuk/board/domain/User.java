@@ -35,8 +35,12 @@ public class User extends Time{
     @Column(nullable = false)
     private Role role;
 
+    @Column
+    private String loginType;
+
+
     @Builder
-    public User(long id, String nickname, String email, String picture, String password, String region, Role role) {
+    public User(long id, String nickname, String email, String picture, String password, String region, Role role, String loginType) {
         this.id = id;
         this.nickname = nickname;
         this.email = email;
@@ -44,6 +48,7 @@ public class User extends Time{
         this.password = password;
         this.region = region;
         this.role = role;
+        this.loginType = loginType;
     }
 
 }

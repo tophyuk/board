@@ -1,5 +1,6 @@
 package com.tophyuk.board.dto;
 
+import com.tophyuk.board.auth.userinfo.OAuth2UserInfo;
 import com.tophyuk.board.domain.Role;
 import com.tophyuk.board.domain.User;
 import jakarta.persistence.Column;
@@ -23,7 +24,7 @@ import java.util.Map;
 @NoArgsConstructor
 public class UserDto implements UserDetails, OAuth2User{
     @NotBlank(message = "사용자 명은 필수 입력 값입니다.")
-    @Pattern(regexp = "^[ㄱ-ㅎ가-힣a-z0-9-_]{2,30}$", message = "사용자명은 특수문자를 제외한 2~20자리여야 합니다.")
+    @Pattern(regexp = "^[ㄱ-ㅎ가-힣a-z0-9-_]{2,30}$", message = "사용자명은 특수문자를 제외한 2~30자리여야 합니다.")
     private String nickname;
 
     @NotBlank(message = "이메일은 필수 입력 값입니다.")
@@ -43,22 +44,23 @@ public class UserDto implements UserDetails, OAuth2User{
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private Role role;
-    
     private String picture;
 
-    private Map<String, Object> attributes;
+    private String loginType;
 
-
+    //private Map<String, Object> attributes;
+    private OAuth2UserInfo oAuth2UserInfo;
 
     @Builder
-    public UserDto(String nickname, String email, String password, String region, Role role, String picture, Map<String, Object> attributes) {
+    public UserDto(String nickname, String email, String password, String region, Role role, String picture, OAuth2UserInfo oAuth2UserInfo, String loginType) {
         this.nickname = nickname;
         this.email = email;
         this.password = password;
         this.region = region;
         this.role = role;
         this.picture = picture;
-        this.attributes = attributes;
+        this.loginType = loginType;
+        this.oAuth2UserInfo = oAuth2UserInfo;
     }
 
     public User toEntity() {
@@ -69,6 +71,7 @@ public class UserDto implements UserDetails, OAuth2User{
                 .region(region)
                 .role(Role.USER)
                 .picture(picture)
+                .loginType(loginType)
                 .build();
 
         return user;
@@ -85,6 +88,7 @@ public class UserDto implements UserDetails, OAuth2User{
                 .region(user.getRegion())
                 .role(user.getRole())
                 .picture(user.getPicture())
+                .loginType(user.getLoginType())
                 .build();
         return userDto;
     }
@@ -129,7 +133,7 @@ public class UserDto implements UserDetails, OAuth2User{
 
     @Override
     public Map<String, Object> getAttributes() {
-        return attributes;
+        return oAuth2UserInfo.getAttributes();
     }
 
     @Override
