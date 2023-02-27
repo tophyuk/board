@@ -24,7 +24,9 @@
 
             <div class="col-md-3 text-end">
                 <a sec:authorize="!isAuthenticated()" class="btn btn-outline-primary me-2" th:href="@{/login}">로그인</a>
+
                 <form th:action="@{/logout}" method="POST" sec:authorize="isAuthenticated()">
+                    <span></span>
                     <button class="btn btn-primary" type="submit">로그아웃</button>
                 </form>
             </div>

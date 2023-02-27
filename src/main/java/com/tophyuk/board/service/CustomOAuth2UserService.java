@@ -1,6 +1,7 @@
 package com.tophyuk.board.service;
 
 import com.tophyuk.board.auth.userinfo.GoogleUserInfo;
+import com.tophyuk.board.auth.userinfo.KakaoUserInfo;
 import com.tophyuk.board.auth.userinfo.NaverUserInfo;
 import com.tophyuk.board.auth.userinfo.OAuth2UserInfo;
 import com.tophyuk.board.domain.Role;
@@ -28,6 +29,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 
     @Override
     public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
+
         OAuth2User oAuth2User = super.loadUser(userRequest);
 
         OAuth2UserInfo oAuth2UserInfo = null;
@@ -35,6 +37,8 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 
         if(provider.equals("google")) {
             oAuth2UserInfo = new GoogleUserInfo(oAuth2User.getAttributes());
+        } else if(provider.equals("kakao")) {
+            oAuth2UserInfo = new KakaoUserInfo(oAuth2User.getAttributes());
         } else if(provider.equals("naver")) {
             oAuth2UserInfo = new NaverUserInfo(oAuth2User.getAttributes());
         }
