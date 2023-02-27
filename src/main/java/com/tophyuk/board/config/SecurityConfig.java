@@ -28,7 +28,7 @@ public class SecurityConfig {
         http
                 .csrf().disable()
                 .authorizeHttpRequests((requests) -> requests
-                        .requestMatchers("/css/**", "/img/**", "/signup", "/login", "/oauth-login", "/login/oauth2/code/google").permitAll()
+                        .requestMatchers("/css/**", "/img/**", "/signup", "/login").permitAll()
                         .requestMatchers("/admin").hasRole("ADMIN")
                         .requestMatchers("/board/**", "/main").hasAnyRole("USER", "ADMIN")
 
@@ -53,6 +53,9 @@ public class SecurityConfig {
                 // OAuth 로그인
                 .oauth2Login()  // OAuth2 설정 시작
                 .loginPage("/login") // 로그인 페이지
+                .defaultSuccessUrl("/main")
+                .successHandler(customAuthSuccessHandler)
+                .failureHandler(customAuthFailureHandler)
                 .userInfoEndpoint() // OAuth2 성공 히우 설정을 시작
                 .userService(customOAuth2UserService); // customOAuthUserService 에서 처리
 

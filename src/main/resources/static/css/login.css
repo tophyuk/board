@@ -74,7 +74,7 @@
 	 margin-right: 0.5rem;
 	 color: var(--color-red);
 }
- .ion-logo-facebook {
+ .ion-logo-kakao {
 	 font-size: 1.65rem;
 	 line-height: inherit;
 	 margin-right: 0.5rem;
@@ -202,11 +202,26 @@
 	 border: 2px solid var(--color-grayish);
 	 border-radius: 2rem;
 	 color: var(--color-black);
-	 background: var(--color-white);
+	 /*background: var(--color-white);*/
 	 text-transform: capitalize;
 	 text-rendering: optimizeLegibility;
 	 transition: all 0.35s ease;
 }
+
+.main .wrapper .method-action.kakao {
+    background-color : #fef01b
+}
+
+.main .wrapper .method-action.naver {
+    background-color : #2db400
+}
+
+.main .wrapper .method-naver span {
+    color : #e9e9e9;
+}
+
+
+/*
  .main .wrapper .method-action:hover {
 	 background: var(--color-light);
-}
+}*/
