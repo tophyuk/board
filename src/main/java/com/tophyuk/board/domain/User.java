@@ -19,7 +19,7 @@ public class User extends Time{
     @Size(min = 2, max = 30)
     private String nickname;
 
-    @Column(unique = true, nullable = false)
+    @Column(nullable = false)
     private String email;
 
     @Column

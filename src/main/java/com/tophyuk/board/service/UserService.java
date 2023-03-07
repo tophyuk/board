@@ -35,16 +35,17 @@ public class UserService implements UserDetailsService {
         return existsByUsername;
     }
 
-    public boolean checkEmail(String email) {
-        boolean existsByEmail = userRepository.existsByEmail(email);
-        return existsByEmail;
+    public boolean checkEmail(String email, String loginType) {
+        boolean existsByEmailAndLoginType = userRepository.existsByEmailAndLoginType(email, loginType);
+        return existsByEmailAndLoginType;
     }
 
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
 
-        User user = userRepository.findByEmail(email).orElseThrow(() -> new UsernameNotFoundException(email + "는 존재하지 않는 이메일입니다."));
+        // 일반 로그인일 때는 무조건 loginType이 basic으로 고정이기 떄문에 찾을때도 basic으로 찾기
+        User user = userRepository.findByEmailAndLoginType(email, "basic").orElseThrow(() -> new UsernameNotFoundException(email + "는 존재하지 않는 이메일입니다."));
 
         UserDto userDto = new UserDto().toUserDto(user); // User<Entity> -> UserDto 변환.
         return userDto;

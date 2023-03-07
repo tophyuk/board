@@ -10,6 +10,7 @@ import com.tophyuk.board.dto.UserDto;
 import com.tophyuk.board.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.authentication.InternalAuthenticationServiceException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
@@ -17,6 +18,8 @@ import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 
+import javax.naming.AuthenticationException;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -32,6 +35,15 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 
         OAuth2User oAuth2User = super.loadUser(userRequest);
 
+        try {
+            return this.process(userRequest, oAuth2User);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            throw new InternalAuthenticationServiceException(ex.getMessage(), ex.getCause());
+        }
+    }
+
+    private OAuth2User process(OAuth2UserRequest userRequest, OAuth2User oAuth2User) {
         OAuth2UserInfo oAuth2UserInfo = null;
         String provider = userRequest.getClientRegistration().getRegistrationId(); // google or naver
 
@@ -59,11 +71,12 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 
         UserDto userDto = new UserDto(nickname, email, password, region, role, picture, oAuth2UserInfo, loginType);
         User user = userDto.toEntity();
-        
-        User findUser = userRepository.findByEmail(email)
+
+        User findUser = userRepository.findByEmailAndLoginType(email, loginType)
                 .orElseGet(() -> userRepository.save(user));
 
         return userDto;
+
     }
 
 }

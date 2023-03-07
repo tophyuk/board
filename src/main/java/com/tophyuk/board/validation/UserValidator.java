@@ -37,7 +37,7 @@ public class UserValidator implements Validator {
         }
 
         // 이메일 중복 체크
-        if (userService.checkEmail(userDto.toEntity().getEmail())) {
+        if (userService.checkEmail(userDto.toEntity().getEmail(), userDto.toEntity().getLoginType())) {
             errors.rejectValue("email", "emailDuplication", "이미 사용중인 이메일 입니다.");
         }
 
