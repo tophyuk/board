@@ -1,5 +1,9 @@
 package com.tophyuk.board;
 
+import com.tophyuk.board.auth.userinfo.GoogleUserInfo;
+import com.tophyuk.board.auth.userinfo.KakaoUserInfo;
+import com.tophyuk.board.auth.userinfo.NaverUserInfo;
+import com.tophyuk.board.auth.userinfo.OAuth2UserInfo;
 import com.tophyuk.board.domain.Board;
 import com.tophyuk.board.domain.Role;
 import com.tophyuk.board.domain.User;
@@ -7,6 +11,7 @@ import com.tophyuk.board.dto.BoardDto;
 import com.tophyuk.board.dto.UserDto;
 import com.tophyuk.board.repository.BoardRepository;
 import com.tophyuk.board.repository.UserRepository;
+import com.tophyuk.board.service.CustomOAuth2UserService;
 import com.tophyuk.board.service.UserService;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
@@ -15,9 +20,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
+import java.util.UUID;
+
 
 @SpringBootTest
 class BoardApplicationTests {
@@ -30,6 +40,12 @@ class BoardApplicationTests {
 
 	@Autowired
 	private UserService userService;
+
+	@Autowired
+	private CustomOAuth2UserService customOAuth2UserService;
+
+	@Autowired
+	private BCryptPasswordEncoder bCryptPasswordEncoder;
 
 	String title = "오늘도 강추위가 예상됩니다.";
 	String writer = "홍길동";
@@ -187,15 +203,16 @@ class BoardApplicationTests {
 	void emailCheck() {
 
 		//given
-		String email = "gildong@naver.com";
+		String email = "sanghyuk1992@naver.com";
 		UserDto userDto = new UserDto();
 		userDto.setEmail(email);
+		userDto.setLoginType("basic");
 
 		//when
-		boolean existsByEmail = userRepository.existsByEmail(userDto.toEntity().getEmail());
+		boolean existsByEmailAndLoginType = userRepository.existsByEmailAndLoginType(userDto.toEntity().getEmail(), userDto.getLoginType());
 
 		//then
-		Assertions.assertThat(existsByEmail).isEqualTo(true);
+		Assertions.assertThat(existsByEmailAndLoginType).isEqualTo(true);
 
 	}
 
@@ -244,7 +261,7 @@ class BoardApplicationTests {
 		String region = "SEOUL";
 		Role role = Role.USER;
 
-		UserDto userDto = new UserDto(nickname, email, "", encodePassword, region, role);
+		UserDto userDto = new UserDto(nickname, email, encodePassword, region, role, "", null, "basic");
 		userService.signup(userDto);
 
 		//then
@@ -254,6 +271,55 @@ class BoardApplicationTests {
 		//when
 		Assertions.assertThat(userDto.getPassword()).isEqualTo(userDetails.getPassword());
 
+	}
+
+
+	@Test
+	@DisplayName("스프링시큐리티 로그아웃")
+	void securityLogout() {
+
+
+		//given
+		String email = "kim2@naver.com";
+
+		User user = userRepository.findByEmail(email).orElseThrow(() -> new UsernameNotFoundException(email + "는 존재하지 않는 이메일입니다."));
+		UserDetails userDetails = userService.loadUserByUsername(email);
+		//then
+
+
+		//when
 
 	}
+
+	@Test
+	@DisplayName("SNS 회원가입 및 로그인")
+	void snsLogin() {
+
+		//given
+		String uuid = UUID.randomUUID().toString().substring(0, 6);
+		String nickname = "닉네임";	// 사용자가 입력한 적은 없지만 만들어준다
+
+		String email = "sanghyuk13992@naver.com";
+
+
+		String password = bCryptPasswordEncoder.encode("basic1!"+uuid);  // 사용자가 입력한 적은 없지만 만들어준다
+		String region = "SEOUL";
+		Role role = Role.USER;
+		String picture = "";
+		String loginType = "naver";
+
+		OAuth2UserInfo oAuth2UserInfo = null;
+
+		UserDto userDto = new UserDto(nickname, email, password, region, role, picture, oAuth2UserInfo, loginType);
+		User user = userDto.toEntity();
+
+		//then
+		User findUser = userRepository.findByEmailAndLoginType(email, loginType)
+								.orElseGet(() -> userRepository.save(user));
+
+		//when
+		Assertions.assertThat(findUser.getEmail()).isEqualTo(email);
+	}
+
+
 }
