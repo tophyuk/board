@@ -14,6 +14,9 @@
     <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
     <script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
 
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.12.4.min.js"></script>
+    <script src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
 
     <!-- 나의 스타일 추가 -->
     <link rel="stylesheet" href="css/login.css">
@@ -80,11 +83,66 @@
             </section>
 
 
-            <th:block th:replace="fragments/findPasswordFragment :: findPw"></th:block>
+            <th:block th:replace="~{fragments/findPasswordFragment :: findPw}"></th:block>
 
         </div>
     </main>
 </div>
 
 </body>
+
+<script>
+    const header = $("meta[name='_csrf_header']").attr('content');
+    const token = $("meta[name='_csrf']").attr('content');
+
+    $('#checkEmail').on('click', function(){
+        checkEmail();
+    });
+
+    function checkEmail(){
+        const userEmail = $('#userEmail').val();
+        if(!userEmail || userEmail.trim() === ""){
+            alert("이메일을 입력하세요.");
+        } else {
+            $.ajax({
+                type: 'GET',
+                url: '/checkEmail',
+                data: {
+                    'email': userEmail,
+                    'loginType' : "basic"
+                },
+                dataType: "text",
+
+            }).done(function(result){
+                console.log("result :" + result);
+                if (result == "true") {
+                    sendEmail();
+                    alert('임시비밀번호를 전송 했습니다.');
+                    window.location.href="/login";
+                } else if (result == "false") {
+                    alert('가입되지 않은 이메일입니다.');
+                }
+            }).fail(function(error){
+                alert(JSON.stringify(error));
+            })
+        }
+    };
+
+ function sendEmail(){
+         const userEmail = $('#userEmail').val();
+
+        $.ajax({
+            type: 'POST',
+            url: '/sendPassword',
+            data: {
+                'email': userEmail,
+                'loginType' : "basic"
+            },
+            error: function(error){
+                alert(JSON.stringify(error));
+            }
+        })
+    }
+  </script>
+
 </html>
