@@ -13,11 +13,15 @@ import com.tophyuk.board.repository.BoardRepository;
 import com.tophyuk.board.repository.UserRepository;
 import com.tophyuk.board.service.CustomOAuth2UserService;
 import com.tophyuk.board.service.UserService;
+import jakarta.mail.MessagingException;
+import jakarta.mail.internet.MimeMessage;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -233,14 +237,14 @@ class BoardApplicationTests {
 	}
 
 	@Test
-	@DisplayName("이메일로 사용자 찾기")
+	@DisplayName("이메일로 일반 로그인 사용자 찾기")
 	void userByEmail() {
 
 		//given
 		String email = "kim@naver.com";
 
 		//then
-		User user = userRepository.findByEmail(email).orElseThrow(() -> new UsernameNotFoundException(email + "는 존재하지 않는 이메일입니다."));
+		User user = userRepository.findByEmailAndLoginType(email,"basic").orElseThrow(() -> new UsernameNotFoundException(email + "는 존재하지 않는 이메일입니다."));
 
 		UserDto userDto = new UserDto().toUserDto(user); // User<Entity> -> UserDto 변환.
 
@@ -319,6 +323,69 @@ class BoardApplicationTests {
 
 		//when
 		Assertions.assertThat(findUser.getEmail()).isEqualTo(email);
+	}
+
+	@Test
+	@DisplayName("패스워드 변경하기")
+	void updatePassword(){
+
+		//given
+		String email= "sanghyuk1992@naver.com";
+		String password = "Basic!@34";
+		String encodePassword = bCryptPasswordEncoder.encode(password);
+		String loginType = "basic";
+
+		//when
+		// 해당 이메일이 (기본 로그인으로) 존재하는지 체크
+		User user = userRepository.findByEmailAndLoginType(email, "basic").orElseThrow(() -> new IllegalArgumentException("해딩 이메일이 존재하지 않습니다."));
+		Assertions.assertThat(user.getEmail()).isEqualTo(email);
+
+		//then
+		//존재하면 패스워드 업데이트
+		UserDto userDto = new UserDto().toUserDto(user);
+		userDto.setPassword(encodePassword);
+		userRepository.updatePwdByEmailAndType(userDto.getEmail(), encodePassword, loginType);
+
+		//업데이트 후 해당 이메일 유저의 패스워드 변경된지 확인
+		User AfterUpadteUser = userRepository.findByEmailAndLoginType(email, "basic").orElseThrow(() -> new IllegalArgumentException("해딩 이메일이 존재하지 않습니다."));
+		Assertions.assertThat(AfterUpadteUser.getPassword()).isEqualTo(encodePassword);
+
+	}
+
+	@Test
+	@DisplayName("변경된 패스워드 이메일 보내주기")
+	void sendEmail(){
+
+		//given
+		JavaMailSender javaMailSender = null;
+		String email = "sanghyuk1992@naver.com";
+		String subject = "임시 비밀번호 안내 이메일입니다.";
+		String text = "안녕하세요. tophyuk의 임시 비밀번호 안내 메일입니다. "
+				+"\n" + "회원님의 임시 비밀번호는 아래와 같습니다. 로그인 후 반드시 비밀번호를 변경해주세요."+"\n";
+		String fromAddress = "shjung8278@gmail.com";
+
+		String uuid = UUID.randomUUID().toString().substring(0, 6);
+		String password = uuid + "Q!";
+
+		//when
+		MimeMessage message = javaMailSender.createMimeMessage();
+		MimeMessageHelper helper = new MimeMessageHelper(message);
+
+		try {
+			helper.setFrom(fromAddress);
+			helper.setSubject(subject);
+			text = text.concat(password);
+			helper.setText(text);
+			helper.setTo(email);
+
+			javaMailSender.send(message);
+		} catch (MessagingException e) {
+			e.printStackTrace();
+		}
+
+		//then
+
+
 	}
 
 
