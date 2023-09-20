@@ -1,5 +1,6 @@
 # board
 frontend : Bootstrap, Javascript, jQuery
+<br>
 backend : SpringBoot + SpringSecurity + Thymeleaf + OAuth2.0
 
 ## 🖥️ 프로젝트 소개
